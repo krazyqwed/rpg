@@ -187,11 +187,45 @@ class World extends Engine {
   isBlocking(x, y, dir) {
     var resources = this.loader.resources;
 
+    if (dir === 'left') {
+      if (typeof this.mapData.map[x + 1][y][1] !== 'undefined' && typeof resources['tilemap_2'].data.frames[this.mapData.map[x + 1][y][1] + '_1'].blocking !== 'undefined') {
+        var blocking = resources['tilemap_2'].data.frames[this.mapData.map[x + 1][y][1] + '_1'].blocking;
+
+        if (blocking.indexOf('left') > -1) {
+          return true;
+        }
+      }
+    } else if (dir === 'right') {
+      if (typeof this.mapData.map[x - 1][y][1] !== 'undefined' && typeof resources['tilemap_2'].data.frames[this.mapData.map[x - 1][y][1] + '_1'].blocking !== 'undefined') {
+        var blocking = resources['tilemap_2'].data.frames[this.mapData.map[x - 1][y][1] + '_1'].blocking;
+
+        if (blocking.indexOf('right') > -1) {
+          return true;
+        }
+      }
+    } else if (dir === 'up') {
+      if (typeof this.mapData.map[x][y + 1][1] !== 'undefined' && typeof resources['tilemap_2'].data.frames[this.mapData.map[x][y + 1][1] + '_1'].blocking !== 'undefined') {
+        var blocking = resources['tilemap_2'].data.frames[this.mapData.map[x][y + 1][1] + '_1'].blocking;
+
+        if (blocking.indexOf('up') > -1) {
+          return true;
+        }
+      }
+    } else if (dir === 'down') {
+      if (typeof this.mapData.map[x][y - 1][1] !== 'undefined' && typeof resources['tilemap_2'].data.frames[this.mapData.map[x][y - 1][1] + '_1'].blocking !== 'undefined') {
+        var blocking = resources['tilemap_2'].data.frames[this.mapData.map[x][y - 1][1] + '_1'].blocking;
+
+        if (blocking.indexOf('down') > -1) {
+          return true;
+        }
+      }
+    }
+
     if (typeof this.mapData.map[x][y][1] !== 'undefined' && typeof resources['tilemap_2'].data.frames[this.mapData.map[x][y][1] + '_1'].blocking !== 'undefined') {
       var blocking = resources['tilemap_2'].data.frames[this.mapData.map[x][y][1] + '_1'].blocking;
-      
+
       if (blocking === 'all') return true;
-/*
+
       if (blocking.indexOf('right') > -1 && dir === 'left') {
         return true;
       } else if (blocking.indexOf('left') > -1 && dir === 'right') {
@@ -201,7 +235,6 @@ class World extends Engine {
       } else if (blocking.indexOf('down') > -1 && dir === 'up') {
         return true;
       }
-*/
 
       return false;
     }

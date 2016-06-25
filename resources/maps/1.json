@@ -5,13 +5,14 @@
     "1": ["tilemap_2"]
   },
   "map": [
-    [{"0": "grass"},{"0": "grass"},{"0": "grass"},{"0": "grass"},{"0": "grass"},{"0": "grass"},{"0": "grass"},{"0": "grass"}],
-    [{"0": "dirt"},{"0": "grass"},{"0": "grass"},{"0": "grass"},{"0": "grass"},{"0": "grass"},{"0": "grass"},{"0": "grass"}],
-    [{"0": "grass"},{"0": "dirt"},{"0": "grass"},{"0": "grass"},{"0": "grass"},{"0": "grass"},{"0": "grass", "1": "tree1"},{"0": "grass"}],
-    [{"0": "grass"},{"0": "grass"},{"0": "dirt"},{"0": "grass"},{"0": "grass"},{"0": "grass"},{"0": "grass"},{"0": "grass"}],
-    [{"0": "grass"},{"0": "grass"},{"0": "grass", "1": "tree1"},{"0": "dirt"},{"0": "grass"},{"0": "grass"},{"0": "grass"},{"0": "grass"}],
-    [{"0": "dirt"},{"0": "dirt"},{"0": "dirt"},{"0": "grass"},{"0": "grass"},{"0": "grass"},{"0": "grass"},{"0": "grass"}],
-    [{"0": "dirt"},{"0": "grass"},{"0": "grass"},{"0": "grass"},{"0": "grass"},{"0": "grass", "1": "tree1"},{"0": "grass"},{"0": "grass"}],
-    [{"0": "grass"},{"0": "dirt"},{"0": "grass"},{"0": "grass"},{"0": "grass"},{"0": "grass"},{"0": "grass"},{"0": "grass"}]
+    [{"0": "grass"},{"0": "grass"},{"0": "grass"},{"0": "grass"},{"0": "grass"},{"0": "grass"},{"0": "grass"},{"0": "grass"},{"0": "grass"}],
+    [{"0": "dirt"},{"0": "grass"},{"0": "grass"},{"0": "grass"},{"0": "grass"},{"0": "grass"},{"0": "grass"},{"0": "grass"},{"0": "grass"}],
+    [{"0": "grass"},{"0": "dirt"},{"0": "grass"},{"0": "grass"},{"0": "grass"},{"0": "grass"},{"0": "grass", "1": "tree1"},{"0": "grass"},{"0": "grass"}],
+    [{"0": "grass"},{"0": "grass"},{"0": "dirt"},{"0": "grass"},{"0": "grass"},{"0": "grass"},{"0": "grass"},{"0": "grass"},{"0": "grass"}],
+    [{"0": "grass"},{"0": "grass"},{"0": "grass", "1": "tree1"},{"0": "dirt", "1": "tree1"},{"0": "grass"},{"0": "grass"},{"0": "grass"},{"0": "grass"},{"0": "grass"}],
+    [{"0": "dirt"},{"0": "dirt"},{"0": "dirt"},{"0": "grass"},{"0": "grass"},{"0": "grass"},{"0": "grass"},{"0": "grass"},{"0": "grass"}],
+    [{"0": "dirt"},{"0": "grass"},{"0": "grass"},{"0": "grass"},{"0": "grass"},{"0": "grass", "1": "tree1"},{"0": "grass"},{"0": "grass"},{"0": "grass"}],
+    [{"0": "grass"},{"0": "dirt"},{"0": "grass"},{"0": "grass"},{"0": "grass"},{"0": "grass"},{"0": "grass"},{"0": "grass"},{"0": "grass"}],
+    [{"0": "grass"},{"0": "dirt"},{"0": "grass"},{"0": "grass"},{"0": "grass"},{"0": "grass"},{"0": "grass"},{"0": "grass"},{"0": "grass"}]
   ]
 }
