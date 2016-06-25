@@ -1,11 +1,10 @@
 export default {
   stage: {
-    width: 1024,
-    height: 768
+    width: 1392,
+    height: 960
   },
-  chunks: {
-    offset: 1,
-    width: 32,
-    height: 24
+  maps: {
+    layers: 3,
+    tileSize: 24
   }
 };

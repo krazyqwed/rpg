@@ -1,0 +1,17 @@
+{
+  "name": "dsadsada",
+  "tilesets": {
+    "0": ["tilemap_1"],
+    "1": ["tilemap_2"]
+  },
+  "map": [
+    [{"0": "grass"},{"0": "grass"},{"0": "grass"},{"0": "grass"},{"0": "grass"},{"0": "grass"},{"0": "grass"},{"0": "grass"}],
+    [{"0": "dirt"},{"0": "grass"},{"0": "grass"},{"0": "grass"},{"0": "grass"},{"0": "grass"},{"0": "grass"},{"0": "grass"}],
+    [{"0": "grass"},{"0": "dirt"},{"0": "grass"},{"0": "grass"},{"0": "grass"},{"0": "grass"},{"0": "grass", "1": "tree1"},{"0": "grass"}],
+    [{"0": "grass"},{"0": "grass"},{"0": "dirt"},{"0": "grass"},{"0": "grass"},{"0": "grass"},{"0": "grass"},{"0": "grass"}],
+    [{"0": "grass"},{"0": "grass"},{"0": "grass", "1": "tree1"},{"0": "dirt"},{"0": "grass"},{"0": "grass"},{"0": "grass"},{"0": "grass"}],
+    [{"0": "dirt"},{"0": "dirt"},{"0": "dirt"},{"0": "grass"},{"0": "grass"},{"0": "grass"},{"0": "grass"},{"0": "grass"}],
+    [{"0": "dirt"},{"0": "grass"},{"0": "grass"},{"0": "grass"},{"0": "grass"},{"0": "grass", "1": "tree1"},{"0": "grass"},{"0": "grass"}],
+    [{"0": "grass"},{"0": "dirt"},{"0": "grass"},{"0": "grass"},{"0": "grass"},{"0": "grass"},{"0": "grass"},{"0": "grass"}]
+  ]
+}

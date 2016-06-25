@@ -21,8 +21,10 @@ class Camera extends Engine {
   update() {
     super.update();
 
-    this._container.position.x = -(GAME.engine.player.getPosition().x - GAME.options.stage.width / 4) * 2;
-    this._container.position.y = -(GAME.engine.player.getPosition().y - GAME.options.stage.height / 4) * 2;
+    var playerHitbox = GAME.engine.player.getHitbox();
+
+    this._container.position.x = -(GAME.engine.player.getPosition().x + (playerHitbox.width / 4) - GAME.options.stage.width / 4) * 2;
+    this._container.position.y = -(GAME.engine.player.getPosition().y + (playerHitbox.height / 2) - GAME.options.stage.height / 4) * 2;
 
     this._container.children.sort(this._depthCompare);
   }

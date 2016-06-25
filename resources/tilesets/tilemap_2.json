@@ -1,0 +1,20 @@
+{"frames":
+    {
+        "tree1_1":
+        {
+          "frame": {"x":120,"y":288,"w":24,"h":24},
+          "sourceSize": {"w":24,"h":24},
+          "blocking": "all"
+        },
+        "tree1_2":
+        {
+          "frame": {"x":120,"y":264,"w":24,"h":24},
+          "sourceSize": {"w":24,"h":24}
+        }
+    },
+    "meta": {
+      "image": "outside_b.png",
+      "format": "RGBA8888",
+      "size": {"w":384,"h":384}
+    }
+}

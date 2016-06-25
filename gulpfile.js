@@ -73,6 +73,7 @@ gulp.task('jsConcat', ['js'], function() {
     return gulp.src([
             jsPath + 'vendor/pixi.min.js',
             jsPath + 'vendor/pixi-tilemap.js',
+            jsPath + 'vendor/tween.min.js',
             jsPath + 'vendor/stats.min.js',
             jsPath + 'vendor/game-shim.js',
             jsOutputPath + 'app.js'
