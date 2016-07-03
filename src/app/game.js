@@ -47,10 +47,9 @@ class Game {
   }
 
   load() {
-    this.engine.world.load();
-    this.engine.player.load();
-
-    this.update();
+    this.engine.world.load()
+    .then(() => this.engine.player.load())
+    .then(() => this.update());
   }
 
   update() {

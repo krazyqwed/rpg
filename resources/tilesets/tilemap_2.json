@@ -1,20 +1,15 @@
 {"frames":
     {
-        "tree1_1":
-        {
-          "frame": {"x":120,"y":288,"w":24,"h":24},
-          "sourceSize": {"w":24,"h":24},
-          "blocking": "up right left"
-        },
-        "tree1_2":
-        {
-          "frame": {"x":120,"y":264,"w":24,"h":24},
-          "sourceSize": {"w":24,"h":24}
+        "4": {
+          "frame": {"x":0,"y":0,"w":72,"h":120},
+          "sourceSize": {"w":72,"h":120},
+          "blocking": "all",
+          "offset": {"x":24,"y":96}
         }
     },
     "meta": {
-      "image": "outside_b.png",
+      "image": "tileset_2.png",
       "format": "RGBA8888",
-      "size": {"w":384,"h":384}
+      "size": {"w":264,"h":264}
     }
 }

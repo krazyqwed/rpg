@@ -59,11 +59,14 @@ gulp.task('cssConcat', ['css'], function() {
 });
 
 gulp.task('js', function() {
-    return $.browserify({ debug: APP_ENV == 'production' ? false : true, extensions: ['.js'], fullPaths: APP_ENV != 'production' })
+    return $.browserify({ debug: false, extensions: ['.js'], fullPaths: APP_ENV != 'production' })
         .transform($.babelify, { presets: ['es2015'] })
         .require(jsPath + 'game.js', { entry: true })
         .bundle()
-        .on('error', function(err) { console.log('Error: ' + err.message); })
+        .on('error', function(err) {
+          console.log('Error: ' + err.message);
+          this.emit('end');
+        })
         .pipe($.source('game.js'))
         .pipe($.rename('app.js'))
         .pipe(gulp.dest(jsOutputPath));
@@ -72,8 +75,7 @@ gulp.task('js', function() {
 gulp.task('jsConcat', ['js'], function() {
     return gulp.src([
             jsPath + 'vendor/pixi.min.js',
-            jsPath + 'vendor/pixi-tilemap.js',
-            jsPath + 'vendor/tween.min.js',
+            jsPath + 'vendor/promise.min.js',
             jsPath + 'vendor/stats.min.js',
             jsPath + 'vendor/game-shim.js',
             jsOutputPath + 'app.js'
