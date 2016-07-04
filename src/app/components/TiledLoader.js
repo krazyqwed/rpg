@@ -81,10 +81,10 @@ class TiledLoader extends Engine {
             }
           }
 
-          if (typeof frame.blocking !== 'undefined') {
-            this.textures[j].__offset = frame.offset;
+          if (typeof frame.abovePlayer !== 'undefined') {
+            this.textures[j].__abovePlayer = frame.abovePlayer;
           } else {
-            this.textures[j].__offset = false;
+            this.textures[j].__abovePlayer = false;
           }
 
           if (typeof frame.blocking !== 'undefined') {

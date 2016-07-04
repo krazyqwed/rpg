@@ -55,8 +55,11 @@ class World extends Engine {
     };
 
     for (var layer = 0; layer < layers; ++layer) {
+      var aboveLayer = layer + GAME.options.maps.playerLayer;
+
       this.mapTiles[layer] = {};
       mapContainer[layer] = new PIXI.Container();
+      mapContainer[aboveLayer] = new PIXI.Container();
 
       for (var i = 0; i < data[layer].length; ++i) {
         var tileData = data[layer][i];
@@ -75,9 +78,8 @@ class World extends Engine {
           } else {
             tile = this._createTile(map, i, tileData);
 
-            if (layer > 0) {
-              tile.position.z = parseInt(layer) + 1;
-              GAME.engine.camera.getContainer().addChild(tile);
+            if (this.tiledLoader.textures[tileData].__abovePlayer) {
+              mapContainer[aboveLayer].addChild(tile);
             } else {
               mapContainer[layer].addChild(tile);
             }
@@ -103,21 +105,21 @@ class World extends Engine {
           tile = this._createFragmentTile(map, i, tileData, 4, 12, 12);
           tileContainer.addChild(tile);
 
-          if (layer > 0) {
-            tileContainer.position.z = parseInt(layer) + 1;
-            GAME.engine.camera.getContainer().addChild(tileContainer);
+          if (this.tiledLoader.textures[tileData[0]].__abovePlayer) {
+            mapContainer[aboveLayer].addChild(tile);
           } else {
-            mapContainer[layer].addChild(tileContainer);
+            mapContainer[layer].addChild(tile);
           }
 
           this.mapTiles[layer][x][y] = this.tiledLoader.textures[tileData[0]];
         }
       }
 
-      if (layer === 0) {
-        mapContainer[layer].position.z = parseInt(layer) + 1;
-        GAME.engine.camera.getContainer().addChild(mapContainer[layer]);
-      }
+      mapContainer[layer].position.z = parseInt(layer) + 1;
+      GAME.engine.camera.getContainer().addChild(mapContainer[layer]);
+
+      mapContainer[aboveLayer].position.z = parseInt(aboveLayer) + 1;
+      GAME.engine.camera.getContainer().addChild(mapContainer[aboveLayer]);
     }
   }
 
@@ -135,16 +137,6 @@ class World extends Engine {
     tile.position.x = (i % map.width) * 24;
     tile.position.y = (Math.floor(i / map.width) % map.height) * 24;
 
-    if (this.tiledLoader.textures[tileData].__offset) {
-      tile.position.__offset = {
-        x: this.tiledLoader.textures[tileData].__offset.x,
-        y: this.tiledLoader.textures[tileData].__offset.y
-      };
-
-      tile.position.x = (i % map.width) * 24 - this.tiledLoader.textures[tileData].__offset.x;
-      tile.position.y = (Math.floor(i / map.width) % map.height) * 24 - this.tiledLoader.textures[tileData].__offset.y;
-    }
-    
     return tile;
   }
 

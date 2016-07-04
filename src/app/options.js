@@ -4,7 +4,7 @@ export default {
     height: 960
   },
   maps: {
-    layers: 3,
+    playerLayer: 100,
     tileSize: 24
   }
 };

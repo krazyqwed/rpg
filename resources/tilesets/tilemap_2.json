@@ -1,15 +1,72 @@
 {"frames":
-    {
-        "4": {
-          "frame": {"x":0,"y":0,"w":72,"h":120},
-          "sourceSize": {"w":72,"h":120},
-          "blocking": "all",
-          "offset": {"x":24,"y":96}
-        }
+  {
+    "4": {
+      "frame": {"x":24,"y":0,"w":24,"h":24},
+      "sourceSize": {"w":24,"h":24},
+      "abovePlayer": true
     },
-    "meta": {
-      "image": "tileset_2.png",
-      "format": "RGBA8888",
-      "size": {"w":264,"h":264}
+    "5": {
+      "frame": {"x":0,"y":24,"w":24,"h":24},
+      "sourceSize": {"w":24,"h":24},
+      "abovePlayer": true
+    },
+    "6": {
+      "frame": {"x":24,"y":24,"w":24,"h":24},
+      "sourceSize": {"w":24,"h":24},
+      "abovePlayer": true
+    },
+    "7": {
+      "frame": {"x":48,"y":24,"w":24,"h":24},
+      "sourceSize": {"w":24,"h":24},
+      "abovePlayer": true
+    },
+    "8": {
+      "frame": {"x":0,"y":48,"w":24,"h":24},
+      "sourceSize": {"w":24,"h":24},
+      "abovePlayer": true
+    },
+    "9": {
+      "frame": {"x":24,"y":48,"w":24,"h":24},
+      "sourceSize": {"w":24,"h":24},
+      "abovePlayer": true
+    },
+    "10": {
+      "frame": {"x":48,"y":48,"w":24,"h":24},
+      "sourceSize": {"w":24,"h":24},
+      "abovePlayer": true
+    },
+    "11": {
+      "frame": {"x":0,"y":72,"w":24,"h":24},
+      "sourceSize": {"w":24,"h":24},
+      "abovePlayer": true
+    },
+    "12": {
+      "frame": {"x":24,"y":72,"w":24,"h":24},
+      "sourceSize": {"w":24,"h":24},
+      "abovePlayer": true
+    },
+    "13": {
+      "frame": {"x":48,"y":72,"w":24,"h":24},
+      "sourceSize": {"w":24,"h":24},
+      "abovePlayer": true
+    },
+    "14": {
+      "frame": {"x":0,"y":96,"w":24,"h":24},
+      "sourceSize": {"w":24,"h":24}
+    },
+    "15": {
+      "frame": {"x":24,"y":96,"w":24,"h":24},
+      "sourceSize": {"w":24,"h":24},
+      "blocking": "all"
+    },
+    "16": {
+      "frame": {"x":48,"y":96,"w":24,"h":24},
+      "sourceSize": {"w":24,"h":24}
     }
+  },
+  "meta": {
+    "image": "tileset_2.png",
+    "format": "RGBA8888",
+    "size": {"w":264,"h":264}
+  }
 }

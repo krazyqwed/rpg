@@ -57,11 +57,7 @@ class Player extends Engine {
       this._spriteGroup.pivot.y = 24;
       this._spriteGroup.position.x = 48;
       this._spriteGroup.position.y = 96;
-      this._spriteGroup.position.z = 3;
-      this._spriteGroup.position.__offset = {
-        x: 12,
-        y: -1
-      };
+      this._spriteGroup.position.z = GAME.options.maps.playerLayer;
 
       GAME.engine.camera.getContainer().addChild(this._spriteGroup);
 
@@ -123,7 +119,8 @@ class Player extends Engine {
   getPosition() {
     return {
       x: this._spriteGroup.position.x,
-      y: this._spriteGroup.position.y
+      y: this._spriteGroup.position.y,
+      z: this._spriteGroup.position.z
     };
   }
 

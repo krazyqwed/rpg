@@ -41,16 +41,8 @@ class Camera extends Engine {
     var ay = a.position.y;
     var by = b.position.y;
 
-    if (typeof a.position.__offset !== 'undefined') {
-      ay += a.position.__offset.y;
-    }
-
-    if (typeof b.position.__offset !== 'undefined') {
-      by += b.position.__offset.y;
-    }
-
-    if (ay <= by) return -1;
-    if (ay >= by) return 1;
+    if (ay < by) return -1;
+    if (ay > by) return 1;
 
     return 0;
   }
