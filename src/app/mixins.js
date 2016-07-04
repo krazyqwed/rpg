@@ -1,63 +1,81 @@
-function toObject(val) {
-  if (val === null || val === undefined) {
-    throw new TypeError('Cannot convert undefined or null to object');
-  }
-
-  return Object(val);
-}
-
-function assignKey(to, from, key) {
-  var val = from[key];
-
-  if (val === undefined || val === null) {
+export function addStatePlayer(sprite) {
+  //Make sure the sprite is a Pixi MovieClip
+  if (!(sprite instanceof PIXI.MovieClip)) {
+    throw new Error("You can only animate PIXI.MovieClip sprites");
     return;
   }
+  
+  //Intialize the variables
+  var frameCounter = 0,
+      numberOfFrames = 0,
+      startFrame = 0,
+      endFrame = 0,
+      timerInterval = undefined,
+      playing = false;
+  
+  //The `show` function (to display static states)
+  function show(frameNumber) {
+    //Reset any possible previous animations
+    reset();
+    //Find the new state on the sprite 
+    sprite.gotoAndStop(frameNumber);
+  };
 
-  if (hasOwnProperty.call(to, key)) {
-    if (to[key] === undefined || to[key] === null) {
-      throw new TypeError('Cannot convert undefined or null to object (' + key + ')');
+  //The `playSequence` function, to play a sequence of frames
+  function playSequence(sequenceArray) {
+    //Reset any possible previous animations
+    reset();
+    //Figure out how many frames there are in the range
+    startFrame = sequenceArray[0];
+    endFrame = sequenceArray[1];
+    numberOfFrames = endFrame - startFrame;
+    //Calculate the frame rate. Set a default fps of 12
+    if (!sprite.fps) sprite.fps = 12;
+    var frameRate = 1000 / sprite.fps;
+    //Set the sprite to the starting frame
+    sprite.gotoAndStop(startFrame);
+    //If the state isn't already playing, start it
+    if(!playing) {
+      timerInterval = setInterval(advanceFrame.bind(this), frameRate);
+      playing = true;
     }
-  }
-
-  if (!hasOwnProperty.call(to, key) || !isObj(val)) {
-    to[key] = val;
-  } else {
-    to[key] = assign(Object(to[key]), from[key]);
-  }
-}
-
-function assign(to, from) {
-  if (to === from) {
-    return to;
-  }
-
-  from = Object(from);
-
-  for (var key in from) {
-    if (hasOwnProperty.call(from, key)) {
-      assignKey(to, from, key);
-    }
-  }
-
-  if (Object.getOwnPropertySymbols) {
-    var symbols = Object.getOwnPropertySymbols(from);
-
-    for (var i = 0; i < symbols.length; i++) {
-      if (propIsEnumerable.call(from, symbols[i])) {
-        assignKey(to, from, symbols[i]);
+  };
+  
+  //`advanceFrame` is called by `setInterval` to dislay the next frame
+  //in the sequence based on the `frameRate`. When frame sequence
+  //reaches the end, it will either stop it or loop it.
+  function advanceFrame() {
+    //Advance the frame if `frameCounter` is less than 
+    //the state's total frames
+    if (frameCounter < numberOfFrames) {
+      //Advance the frame
+      sprite.gotoAndStop(sprite.currentFrame + 1);
+      //Update the frame counter
+      frameCounter += 1;
+    } else {
+      //If we've reached the last frame and `loop`
+      //is `true`, then start from the first frame again
+      if (sprite.loop) {
+        sprite.gotoAndStop(startFrame);
+        frameCounter = 1;
       }
     }
   }
-
-  return to;
-}
-
-export function objectClone(obj) {
-  var copy = toObject(obj);
-
-  for (var s = 1; s < arguments.length; s++) {
-    assign(target, arguments[s]);
+  
+  function reset() {
+    //Reset `playing` to `false`, set the `frameCounter` to 0,
+    //and clear the `timerInterval`
+    if (timerInterval !== undefined && playing === true) {
+      playing = false;
+      frameCounter = 0;
+      startFrame = 0;
+      endFrame = 0;
+      numberOfFrames = 0;
+      clearInterval(timerInterval);
+    }
   }
 
-  return copy;
+  //Add the `show` and `playSequence` methods to the sprite
+  sprite.show = show;
+  sprite.playSequence = playSequence;
 };

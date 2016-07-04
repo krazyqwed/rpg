@@ -1,5 +1,6 @@
 import Engine from '../Engine';
 import Keyboard from '../Keyboard';
+import { addStatePlayer } from '../mixins';
 
 var GAME;
 
@@ -22,8 +23,14 @@ class Player extends Engine {
       up: null,
       down: null
     }
-    this.walkSpeed = 2;
+    this.walkSpeed = 1;
     this.isMoving = false;
+    this.animations = {
+      stand: new PIXI.Container(),
+      walk: new PIXI.Container()
+    };
+    this.activeAnimation = 'stand';
+    this.facing = 2;
   }
 
   init(container) {
@@ -44,15 +51,6 @@ class Player extends Engine {
     this.loader.add('player', 'resources/charsets/tilemap_1.json');
 
     this.loader.load((loader, resources) => {
-      var textures = resources['player'].textures;
-      var body = new PIXI.Sprite(textures['body']);
-      var armor = new PIXI.Sprite(textures['armor']);
-      var head = new PIXI.Sprite(textures['head']);
-
-      this._spriteGroup.addChild(body);
-      this._spriteGroup.addChild(armor);
-      this._spriteGroup.addChild(head);
-
       this._spriteGroup.pivot.x = 12;
       this._spriteGroup.pivot.y = 24;
       this._spriteGroup.position.x = 48;
@@ -60,6 +58,9 @@ class Player extends Engine {
       this._spriteGroup.position.z = GAME.options.maps.playerLayer;
 
       GAME.engine.camera.getContainer().addChild(this._spriteGroup);
+
+      this._initAnimations(resources['player'].textures);
+      this.setAnimation('stand');
 
       p.done();
     });
@@ -75,10 +76,22 @@ class Player extends Engine {
     var canMove;
 
     switch (this.isMoving) {
-      case KEY_LEFT: pos.x -= this.walkSpeed; break;
-      case KEY_RIGHT: pos.x += this.walkSpeed; break;
-      case KEY_UP: pos.y -= this.walkSpeed; break;
-      case KEY_DOWN: pos.y += this.walkSpeed; break;
+      case KEY_LEFT: {
+        pos.x -= this.walkSpeed;
+        break;
+      }
+      case KEY_RIGHT: {
+        pos.x += this.walkSpeed;
+        break;
+      }
+      case KEY_UP: {
+        pos.y -= this.walkSpeed;
+        break;
+      } 
+      case KEY_DOWN: {
+        pos.y += this.walkSpeed;
+        break;
+      }
     }
 
     if (pos.x % tileSize === 0 && pos.y % tileSize === 0) {
@@ -86,33 +99,43 @@ class Player extends Engine {
     }
 
     if (this.isMoving === false) {
-      if (this.keys.left.getState()) {
-        var currentPos = this.getTiledPosition();
+      var currentPos;
+      var isArrowPress = this.keys.left.getState() || this.keys.right.getState() || this.keys.up.getState() || this.keys.down.getState();
 
+      if (isArrowPress) {
+        currentPos = this.getTiledPosition();
+        this.setAnimation('walk');
+      }
+
+      if (this.keys.left.getState()) {
         this.isMoving = !GAME.engine.world.isBlocking(currentPos.x, currentPos.y, KEY_LEFT) ? KEY_LEFT : false;
+        this.facing = 3;
       }
       if (this.keys.right.getState()) {
-        var currentPos = this.getTiledPosition();
-
         this.isMoving = !GAME.engine.world.isBlocking(currentPos.x, currentPos.y, KEY_RIGHT) ? KEY_RIGHT : false;
+        this.facing = 1;
       }
       if (this.keys.up.getState()) {
-        var currentPos = this.getTiledPosition();
-
         this.isMoving = !GAME.engine.world.isBlocking(currentPos.x, currentPos.y, KEY_UP) ? KEY_UP : false;
+        this.facing = 0;
       }
       if (this.keys.down.getState()) {
-        var currentPos = this.getTiledPosition();
-
         this.isMoving = !GAME.engine.world.isBlocking(currentPos.x, currentPos.y, KEY_DOWN) ? KEY_DOWN : false;
+        this.facing = 2;
       }
+
+      if (!this.isMoving && this.activeAnimation !== 'stand') {
+        this.setAnimation('stand');
+      }
+
+      this.playAnimation();
     }
   }
 
   getHitbox() {
     return {
-      width: this._spriteGroup.width,
-      height: this._spriteGroup.height
+      width: 48,
+      height: 48
     };
   }
 
@@ -134,6 +157,55 @@ class Player extends Engine {
   setPosition(position) {
     this._spriteGroup.position.x = (position.x !== undefined) ? position.x : this._spriteGroup.position.x;
     this._spriteGroup.position.y = (position.y !== undefined) ? position.y : this._spriteGroup.position.y;
+  }
+
+  _initAnimations(tex) {
+    var sprite;
+
+    for (var i = 0; i < 4; ++i) {
+      sprite = new PIXI.extras.MovieClip([tex[i * 3 + 2]]);
+      this.animations['stand'].addChild(sprite);
+
+      sprite = new PIXI.extras.MovieClip([tex[i * 3 + 1], tex[i * 3 + 2], tex[i * 3 + 3], tex[i * 3 + 2]]);
+      sprite.animationSpeed = this.walkSpeed / sprite.textures.length / 2;
+      sprite.visible = false;
+      this.animations['walk'].addChild(sprite);
+    }
+
+    this._spriteGroup.addChild(this.animations['stand']);
+    this._spriteGroup.addChild(this.animations['walk']);
+  }
+
+  setAnimation(key) {
+    this.activeAnimation = key;
+
+    this.resetAnimations();
+  }
+
+  resetAnimations() {
+    for (var i in this.animations) {
+      for (var j = 0; j < 4; ++j) {
+        if (i !== this.activeAnimation || j !== this.facing) {
+          this.animations[i].children[j].visible = false;
+          this.animations[i].children[j].gotoAndStop(0);
+        }
+      }
+    }
+  }
+
+  playAnimation() {
+    this.resetAnimations();
+
+    this.animations[this.activeAnimation].children[this.facing].visible = true;
+    this.animations[this.activeAnimation].children[this.facing].play();
+  }
+
+  pauseAnimation() {
+    this.animations[this.activeAnimation].children[this.facing].stop();
+  }
+
+  stopAnimation() {
+    this.animations[this.activeAnimation].children[this.facing].gotoAndStop(0);
   }
 }
 

@@ -1,28 +1,25 @@
 {"frames":
-    {
-        "1": {
-          "frame": {"x":96,"y":0,"w":24,"h":24},
-          "sourceSize": {"w":24,"h":24}
-        },
-
-        "2": {
-          "frame": {"x":0,"y":0,"w":24,"h":24},
-          "sourceSize": {"w":24,"h":24},
-          "fragment": true,
-          "animation": [0,1,2,1],
-          "blocking": "all"
-        },
-
-        "3": {
-          "frame": {"x":72,"y":0,"w":24,"h":24},
-          "sourceSize": {"w":24,"h":24},
-          "fragment": true
-        }
-
+  {
+    "1": {
+      "frame": {"x":96,"y":0,"w":24,"h":24},
+      "sourceSize": {"w":24,"h":24}
     },
-    "meta": {
-      "image": "tileset_1.png",
-      "format": "RGBA8888",
-      "size": {"w":312,"h":144}
+    "2": {
+      "frame": {"x":0,"y":0,"w":24,"h":24},
+      "sourceSize": {"w":24,"h":24},
+      "fragment": true,
+      "animation": [0,1,2,1],
+      "blocking": "all"
+    },
+    "3": {
+      "frame": {"x":72,"y":0,"w":24,"h":24},
+      "sourceSize": {"w":24,"h":24},
+      "fragment": true
     }
+  },
+  "meta": {
+    "image": "tileset_1.png",
+    "format": "RGBA8888",
+    "size": {"w":312,"h":144}
+  }
 }
