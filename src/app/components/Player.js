@@ -23,7 +23,7 @@ class Player extends Engine {
       up: null,
       down: null
     }
-    this.walkSpeed = 1;
+    this.walkSpeed = 2;
     this.isMoving = false;
     this.animations = {
       stand: new PIXI.Container(),
@@ -167,7 +167,7 @@ class Player extends Engine {
       this.animations['stand'].addChild(sprite);
 
       sprite = new PIXI.extras.MovieClip([tex[i * 3 + 1], tex[i * 3 + 2], tex[i * 3 + 3], tex[i * 3 + 2]]);
-      sprite.animationSpeed = this.walkSpeed / sprite.textures.length / 2;
+      sprite.animationSpeed = 1 / sprite.textures.length / 2;
       sprite.visible = false;
       this.animations['walk'].addChild(sprite);
     }

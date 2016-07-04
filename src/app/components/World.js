@@ -106,9 +106,9 @@ class World extends Engine {
           tileContainer.addChild(tile);
 
           if (this.tiledLoader.textures[tileData[0]].__abovePlayer) {
-            mapContainer[aboveLayer].addChild(tile);
+            mapContainer[aboveLayer].addChild(tileContainer);
           } else {
-            mapContainer[layer].addChild(tile);
+            mapContainer[layer].addChild(tileContainer);
           }
 
           this.mapTiles[layer][x][y] = this.tiledLoader.textures[tileData[0]];
@@ -161,23 +161,23 @@ class World extends Engine {
     var boundaries = ['all', 'all', 'all', 'all', 'all'];
 
     for (var l = 0; l < this.mapTiles.length; ++l) {
-      if (typeof this.mapTiles[l][x][y].__void === 'undefined') {
+      if (typeof this.mapTiles[l][x][y].__void === 'undefined' && this.mapTiles[l][x][y].__abovePlayer === false) {
         boundaries[0] = this.mapTiles[l][x][y];
       }
 
-      if (y > 0 && typeof this.mapTiles[l][x][y - 1].__void === 'undefined') {
+      if (y > 0 && typeof this.mapTiles[l][x][y - 1].__void === 'undefined' && this.mapTiles[l][x][y - 1].__abovePlayer === false) {
         boundaries[1] = this.mapTiles[l][x][y - 1];
       }
 
-      if (x < this.mapSize.width - 1 && typeof this.mapTiles[l][x + 1][y].__void === 'undefined') {
+      if (x < this.mapSize.width - 1 && typeof this.mapTiles[l][x + 1][y].__void === 'undefined' && this.mapTiles[l][x + 1][y].__abovePlayer === false) {
         boundaries[2] = this.mapTiles[l][x + 1][y];
       }
 
-      if (y < this.mapSize.height - 1 && typeof this.mapTiles[l][x][y + 1].__void === 'undefined') {
+      if (y < this.mapSize.height - 1 && typeof this.mapTiles[l][x][y + 1].__void === 'undefined' && this.mapTiles[l][x][y + 1].__abovePlayer === false) {
         boundaries[3] = this.mapTiles[l][x][y + 1];
       }
 
-      if (x > 0 && typeof this.mapTiles[l][x - 1][y].__void === 'undefined') {
+      if (x > 0 && typeof this.mapTiles[l][x - 1][y].__void === 'undefined' && this.mapTiles[l][x - 1][y].__abovePlayer === false) {
         boundaries[4] = this.mapTiles[l][x - 1][y];
       }
     }
