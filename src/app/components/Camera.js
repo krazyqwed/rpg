@@ -1,4 +1,5 @@
 import Engine from '../Engine';
+import { selectiveColor as shader } from '../shaders';
 
 var GAME;
 
@@ -16,6 +17,17 @@ class Camera extends Engine {
     super.init();
 
     this._container = container;
+  }
+
+  load() {
+    super.load();
+
+    var uniforms = {
+      customUniform: { type: '1f', value: 0.5 }
+    };
+
+    var customShader = new PIXI.Filter('', shader, uniforms);
+    GAME.camera.filters = [customShader];
   }
 
   update() {

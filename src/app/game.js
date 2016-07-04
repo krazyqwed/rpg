@@ -15,7 +15,7 @@ class Game {
     this.renderer;
     this.loader;
     this.world;
-    this.camera;
+    this.camera = new PIXI.Container();
     this.stats;
 
     this.engine.world = new World(this);
@@ -30,9 +30,15 @@ class Game {
     this.engine.player.init();
     this.engine.camera.init(new PIXI.Container());
     this.engine.camera.getContainer().scale = {x: 2, y: 2 };
+    this.camera.addChild(this.engine.camera.getContainer());
 
     PIXI.SCALE_MODES.DEFAULT = PIXI.SCALE_MODES.NEAREST;
     this.renderer = new PIXI.WebGLRenderer(this.options.stage.width, this.options.stage.height, { antialias: false, transparent: false, resolution: 1 });
+    
+    this.camera.width = this.options.stage.width;
+    this.camera.height = this.options.stage.height;
+
+    console.log(this.camera);
 
     this.stats = new Stats();
     this.stats.setMode(0);
@@ -47,6 +53,7 @@ class Game {
   }
 
   load() {
+    this.engine.camera.load();
     this.engine.world.load()
     .then(() => this.engine.player.load())
     .then(() => this.update());
@@ -68,7 +75,7 @@ class Game {
   render() {
     this.engine.world.render();
 
-    this.renderer.render(this.engine.camera.getContainer());
+    this.renderer.render(this.camera);
   }
 }
 
