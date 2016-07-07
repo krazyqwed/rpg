@@ -105,6 +105,85 @@
       "frame": {"x":120,"y":48,"w":24,"h":24},
       "sourceSize": {"w":24,"h":24},
       "blocking": "top left"
+    },
+
+    "26": {
+      "frame": {"x":24,"y":120,"w":24,"h":24},
+      "sourceSize": {"w":24,"h":24},
+      "abovePlayer": true
+    },
+    "27": {
+      "frame": {"x":0,"y":144,"w":24,"h":24},
+      "sourceSize": {"w":24,"h":24},
+      "abovePlayer": true
+    },
+    "28": {
+      "frame": {"x":24,"y":144,"w":24,"h":24},
+      "sourceSize": {"w":24,"h":24},
+      "abovePlayer": true
+    },
+    "29": {
+      "frame": {"x":48,"y":144,"w":24,"h":24},
+      "sourceSize": {"w":24,"h":24},
+      "abovePlayer": true
+    },
+    "30": {
+      "frame": {"x":0,"y":168,"w":24,"h":24},
+      "sourceSize": {"w":24,"h":24},
+      "abovePlayer": true
+    },
+    "31": {
+      "frame": {"x":24,"y":168,"w":24,"h":24},
+      "sourceSize": {"w":24,"h":24},
+      "abovePlayer": true
+    },
+    "32": {
+      "frame": {"x":48,"y":168,"w":24,"h":24},
+      "sourceSize": {"w":24,"h":24},
+      "abovePlayer": true
+    },
+    "33": {
+      "frame": {"x":0,"y":192,"w":24,"h":24},
+      "sourceSize": {"w":24,"h":24},
+      "abovePlayer": true
+    },
+    "34": {
+      "frame": {"x":24,"y":192,"w":24,"h":24},
+      "sourceSize": {"w":24,"h":24},
+      "abovePlayer": true
+    },
+    "35": {
+      "frame": {"x":48,"y":192,"w":24,"h":24},
+      "sourceSize": {"w":24,"h":24},
+      "abovePlayer": true
+    },
+    "36": {
+      "frame": {"x":0,"y":216,"w":24,"h":24},
+      "sourceSize": {"w":24,"h":24}
+    },
+    "37": {
+      "frame": {"x":24,"y":216,"w":24,"h":24},
+      "sourceSize": {"w":24,"h":24},
+      "blocking": "all"
+    },
+    "38": {
+      "frame": {"x":48,"y":216,"w":24,"h":24},
+      "sourceSize": {"w":24,"h":24}
+    },
+
+    "39": {
+      "frame": {"x":0,"y":120,"w":24,"h":24},
+      "sourceSize": {"w":24,"h":24},
+      "blocking": "all"
+    },
+
+    "40": {
+      "frame": {"x":0,"y":0,"w":24,"h":24},
+      "sourceSize": {"w":24,"h":24}
+    },
+    "41": {
+      "frame": {"x":48,"y":0,"w":24,"h":24},
+      "sourceSize": {"w":24,"h":24}
     }
   },
   "meta": {

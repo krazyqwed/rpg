@@ -44,13 +44,11 @@ class TiledLoader extends Engine {
 
             for (var f = 0; f < 10; ++f) {
               var fragment = this.textures[j].clone();
-              fragment.crop = new PIXI.Rectangle(0, 0, 12, 12);
-              fragment.frame = new PIXI.Rectangle(fragment.frame.y, f * 12, 12, 12);
+              fragment.frame = new PIXI.Rectangle(fragment.frame.x, f * 12, 12, 12);
               this.textures[j + '_fragments'].push(fragment);
 
               fragment = this.textures[j].clone();
-              fragment.crop = new PIXI.Rectangle(0, 0, 12, 12);
-              fragment.frame = new PIXI.Rectangle(fragment.frame.y + 12, f * 12, 12, 12);
+              fragment.frame = new PIXI.Rectangle(fragment.frame.x + 12, f * 12, 12, 12);
               this.textures[j + '_fragments'].push(fragment);
             }
           }

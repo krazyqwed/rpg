@@ -53,8 +53,8 @@ class Player extends Engine {
     this.loader.load((loader, resources) => {
       this._spriteGroup.pivot.x = 12;
       this._spriteGroup.pivot.y = 24;
-      this._spriteGroup.position.x = 48;
-      this._spriteGroup.position.y = 96;
+      this._spriteGroup.position.x = 96;
+      this._spriteGroup.position.y = 384;
       this._spriteGroup.position.z = GAME.options.maps.playerLayer;
 
       GAME.engine.camera.getContainer().addChild(this._spriteGroup);

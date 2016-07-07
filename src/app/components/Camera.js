@@ -34,9 +34,23 @@ class Camera extends Engine {
     super.update();
 
     var playerHitbox = GAME.engine.player.getHitbox();
+    var playerPos = GAME.engine.player.getPosition();
 
-    this._container.position.x = -(GAME.engine.player.getPosition().x + (playerHitbox.width / 4) - GAME.options.stage.width / 4) * 2;
-    this._container.position.y = -(GAME.engine.player.getPosition().y + (playerHitbox.height / 2) - GAME.options.stage.height / 4) * 2;
+    if (playerPos.x + (playerHitbox.width / 4) < GAME.options.stage.width / 4) {
+      this._container.position.x = 0;
+    } else if (playerPos.x + (playerHitbox.width / 4) > GAME.engine.world.mapSize.width * GAME.options.maps.tileSize - GAME.options.stage.width / 4) {
+      this._container.position.x = -(GAME.engine.world.mapSize.width * GAME.options.maps.tileSize - GAME.options.stage.width / 2) * 2;
+    } else {
+      this._container.position.x = -(playerPos.x + (playerHitbox.width / 4) - GAME.options.stage.width / 4) * 2;
+    }
+
+    if (playerPos.y + (playerHitbox.height / 2) < GAME.options.stage.height / 4) {
+      this._container.position.y = 0;
+    } else if (playerPos.y + (playerHitbox.height / 2) > GAME.engine.world.mapSize.height * GAME.options.maps.tileSize - GAME.options.stage.height / 4) {
+      this._container.position.y = -(GAME.engine.world.mapSize.height * GAME.options.maps.tileSize - GAME.options.stage.height / 2) * 2;
+    } else {
+      this._container.position.y = -(playerPos.y + (playerHitbox.height / 2) - GAME.options.stage.height / 4) * 2;
+    }
 
     this._container.children.sort(this._depthCompare.bind(this));
   }
