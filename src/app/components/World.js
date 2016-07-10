@@ -171,22 +171,32 @@ class World extends Engine {
     for (var l = 0; l < this.mapTiles.length; ++l) {
       if (typeof this.mapTiles[l][x][y].__void === 'undefined' && this.mapTiles[l][x][y].__abovePlayer === false) {
         boundaries[0] = this.mapTiles[l][x][y];
+      } else if (this.mapTiles[l][x][y].__abovePlayer === true) {
+        boundaries[0] = { __blocking: false };
       }
 
       if (y > 0 && typeof this.mapTiles[l][x][y - 1].__void === 'undefined' && this.mapTiles[l][x][y - 1].__abovePlayer === false) {
         boundaries[1] = this.mapTiles[l][x][y - 1];
+      } else if (this.mapTiles[l][x][y - 1].__abovePlayer === true) {
+        boundaries[1] = { __blocking: false };
       }
 
       if (x < this.mapSize.width - 1 && typeof this.mapTiles[l][x + 1][y].__void === 'undefined' && this.mapTiles[l][x + 1][y].__abovePlayer === false) {
         boundaries[2] = this.mapTiles[l][x + 1][y];
+      } else if (this.mapTiles[l][x + 1][y].__abovePlayer === true) {
+        boundaries[2] = { __blocking: false };
       }
 
       if (y < this.mapSize.height - 1 && typeof this.mapTiles[l][x][y + 1].__void === 'undefined' && this.mapTiles[l][x][y + 1].__abovePlayer === false) {
         boundaries[3] = this.mapTiles[l][x][y + 1];
+      } else if (this.mapTiles[l][x][y + 1].__abovePlayer === true) {
+        boundaries[3] = { __blocking: false };
       }
 
       if (x > 0 && typeof this.mapTiles[l][x - 1][y].__void === 'undefined' && this.mapTiles[l][x - 1][y].__abovePlayer === false) {
         boundaries[4] = this.mapTiles[l][x - 1][y];
+      } else if (this.mapTiles[l][x - 1][y].__abovePlayer === true) {
+        boundaries[4] = { __blocking: false };
       }
     }
 

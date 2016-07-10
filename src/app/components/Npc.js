@@ -35,14 +35,9 @@ class Npc extends Engine {
 
     this._spriteGroup.pivot.x = 12;
     this._spriteGroup.pivot.y = 24;
-    this._spriteGroup.position.x = 192;
-    this._spriteGroup.position.y = 336;
     this._spriteGroup.position.z = GAME.options.maps.playerLayer;
 
-    this.setTiledPosition({
-      x: 10,
-      y: 15
-    });
+    this.setTiledPosition({ x: 10, y: 15 });
 
     GAME.engine.camera.getContainer().addChild(this._spriteGroup);
 
