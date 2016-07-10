@@ -9,7 +9,6 @@ class TiledLoader extends Engine {
 
     this.NAME = 'TiledLoader';
 
-    this.assetsLoaded = false;
     this.tilemapLoader;
     this.tilesets = [
       'tilemap_1',

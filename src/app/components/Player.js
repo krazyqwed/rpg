@@ -33,7 +33,7 @@ class Player extends Engine {
     this.facing = 2;
   }
 
-  init(container) {
+  init() {
     super.init();
 
     this.keys[KEY_LEFT] = new Keyboard(37);
@@ -47,23 +47,18 @@ class Player extends Engine {
 
     var p = new promise.Promise();
 
-    this.loader = new PIXI.loaders.Loader();
-    this.loader.add('player', 'resources/charsets/tilemap_1.json');
+    this._spriteGroup.pivot.x = 12;
+    this._spriteGroup.pivot.y = 24;
+    this._spriteGroup.position.x = 96;
+    this._spriteGroup.position.y = 384;
+    this._spriteGroup.position.z = GAME.options.maps.playerLayer;
 
-    this.loader.load((loader, resources) => {
-      this._spriteGroup.pivot.x = 12;
-      this._spriteGroup.pivot.y = 24;
-      this._spriteGroup.position.x = 96;
-      this._spriteGroup.position.y = 384;
-      this._spriteGroup.position.z = GAME.options.maps.playerLayer;
+    GAME.engine.camera.getContainer().addChild(this._spriteGroup);
 
-      GAME.engine.camera.getContainer().addChild(this._spriteGroup);
+    this._initAnimations(GAME.engine.charLoader.characters[0].textures);
+    this.setAnimation('stand');
 
-      this._initAnimations(resources['player'].textures);
-      this.setAnimation('stand');
-
-      p.done();
-    });
+    p.done();
 
     return p;
   }

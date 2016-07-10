@@ -1,6 +1,7 @@
 import Engine from '../Engine';
 import { objectClone } from '../mixins';
 import TiledLoader from './TiledLoader';
+import Npc from './Npc';
 
 var GAME;
 
@@ -37,6 +38,7 @@ class World extends Engine {
       this.mapLoader.add(map, 'resources/maps/' + map + '.json');
       this.mapLoader.load((loader, res) => {
         this._buildMap(res[map].data);
+        this._placeNPC();
         p.done();
       });
     });
@@ -155,6 +157,12 @@ class World extends Engine {
     tile.position.y = (Math.floor(i / map.width) % map.height) * 24 + yOffset;
 
     return tile;
+  }
+
+  _placeNPC() {
+    var npc = new Npc(GAME);
+    npc.setAction('Move', ['down', 'right', 'right', 'up', 'left', 'left', 'down', 'right', 'right', 'up', 'left', 'left', 'down', 'right', 'right', 'up', 'left', 'left', 'down', 'right', 'right', 'up', 'left', 'left', 'down', 'right', 'right', 'up', 'left', 'left', 'down', 'right', 'right', 'up', 'left', 'left', 'down', 'right', 'right', 'up', 'left', 'left', 'down', 'right', 'right', 'up', 'left', 'left', 'down', 'right', 'right', 'up', 'left', 'left']);
+    npc.setAction('Turn', 'down');
   }
 
   _getBoundaries(x, y) {

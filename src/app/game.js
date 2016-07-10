@@ -1,4 +1,5 @@
 import World from './components/World';
+import CharLoader from './components/CharLoader';
 import Player from './components/Player';
 import Camera from './components/Camera';
 import options from './options';
@@ -19,6 +20,7 @@ class Game {
     this.stats;
 
     this.engine.world = new World(this);
+    this.engine.charLoader = new CharLoader(this);
     this.engine.player = new Player(this);
     this.engine.camera = new Camera(this);
 
@@ -27,6 +29,7 @@ class Game {
 
   init() {
     this.engine.world.init();
+    this.engine.charLoader.init();
     this.engine.player.init();
     this.engine.camera.init(new PIXI.Container());
     this.engine.camera.getContainer().scale = {x: 2, y: 2 };
@@ -38,13 +41,12 @@ class Game {
     this.camera.width = this.options.stage.width;
     this.camera.height = this.options.stage.height;
 
-    console.log(this.camera);
-
     this.stats = new Stats();
     this.stats.setMode(0);
-    this.stats.domElement.style.position = 'absolute';
-    this.stats.domElement.style.left = '0px';
-    this.stats.domElement.style.top = '0px';
+    this.stats.domElement.style.position = 'fixed';
+    this.stats.domElement.style.left = '0';
+    this.stats.domElement.style.top = '0';
+    this.stats.domElement.style.opacity = '.65';
 
     document.body.appendChild(this.renderer.view);
     document.body.appendChild(this.stats.domElement);
@@ -53,8 +55,9 @@ class Game {
   }
 
   load() {
-    this.engine.camera.load();
-    this.engine.world.load()
+    this.engine.camera.load()
+    .then(() => this.engine.charLoader.load())
+    .then(() => this.engine.world.load())
     .then(() => this.engine.player.load())
     .then(() => this.update());
   }
@@ -68,7 +71,6 @@ class Game {
 
     this.render();
 
-    this.stats.end();
     requestAnimationFrame(this.update.bind(this));
   }
 
@@ -76,6 +78,7 @@ class Game {
     this.engine.world.render();
 
     this.renderer.render(this.camera);
+    this.stats.end();
   }
 }
 

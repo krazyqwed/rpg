@@ -22,12 +22,18 @@ class Camera extends Engine {
   load() {
     super.load();
 
+    var p = new promise.Promise();
+
     var uniforms = {
       customUniform: { type: '1f', value: 0.5 }
     };
 
     var customShader = new PIXI.Filter('', shader, uniforms);
     GAME.camera.filters = [customShader];
+
+    p.done();
+
+    return p;
   }
 
   update() {
@@ -82,6 +88,22 @@ class Camera extends Engine {
       x: this._container.position.x,
       y: this._container.position.y
     }
+  }
+
+  objectIsVisible(pos, margin) {
+    if (!margin) {
+      margin = 2;
+    }
+
+    if (pos[0] <= -this._container.position.x / 2 - GAME.options.maps.tileSize * margin || pos[0] >= -this._container.position.x / 2 + GAME.options.stage.width / 2 + GAME.options.maps.tileSize * margin) {
+      return false;
+    }
+
+    if (pos[1] <= -this._container.position.y / 2 - GAME.options.maps.tileSize * margin || pos[1] >= -this._container.position.y / 2 + GAME.options.stage.height / 2 + GAME.options.maps.tileSize * margin) {
+      return false;
+    }
+
+    return true;
   }
 }
 
