@@ -28,16 +28,16 @@ class Game {
   }
 
   init() {
+    PIXI.SCALE_MODES.DEFAULT = PIXI.SCALE_MODES.NEAREST;
+    this.renderer = new PIXI.WebGLRenderer(this.options.stage.width, this.options.stage.height, { antialias: false, transparent: false, resolution: 1 });
+
     this.engine.world.init();
     this.engine.charLoader.init();
     this.engine.player.init();
     this.engine.camera.init(new PIXI.Container());
-    this.engine.camera.getContainer().scale = {x: 2, y: 2 };
+    this.engine.camera.getContainer().scale = { x: 2, y: 2 };
     this.camera.addChild(this.engine.camera.getContainer());
 
-    PIXI.SCALE_MODES.DEFAULT = PIXI.SCALE_MODES.NEAREST;
-    this.renderer = new PIXI.WebGLRenderer(this.options.stage.width, this.options.stage.height, { antialias: false, transparent: false, resolution: 1 });
-    
     this.camera.width = this.options.stage.width;
     this.camera.height = this.options.stage.height;
 
@@ -57,7 +57,7 @@ class Game {
   load() {
     this.engine.camera.load()
     .then(() => this.engine.charLoader.load())
-    .then(() => this.engine.world.load())
+    .then(() => this.engine.world.load('map_1'))
     .then(() => this.engine.player.load())
     .then(() => this.update());
   }
@@ -78,6 +78,7 @@ class Game {
     this.engine.world.render();
 
     this.renderer.render(this.camera);
+
     this.stats.end();
   }
 }

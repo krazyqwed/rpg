@@ -8,7 +8,7 @@ const MOVE_UP = 'up';
 const MOVE_DOWN = 'down';
 
 class Npc extends Engine {
-  constructor(Game) {
+  constructor(Game, options) {
     super();
     GAME = Game;
 

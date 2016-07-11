@@ -31,6 +31,7 @@ class Player extends Engine {
     };
     this.activeAnimation = 'stand';
     this.facing = 2;
+    this.canMove = true;
   }
 
   init() {
@@ -51,7 +52,7 @@ class Player extends Engine {
     this._spriteGroup.pivot.y = 24;
     this._spriteGroup.position.z = GAME.options.maps.playerLayer;
 
-    this.setTiledPosition({ x: 30, y: 90 });
+    this.setTiledPosition({ x: 3, y: 9 });
 
     GAME.engine.camera.getContainer().addChild(this._spriteGroup);
 
@@ -68,7 +69,6 @@ class Player extends Engine {
 
     var tileSize = GAME.options.maps.tileSize;
     var pos = this._spriteGroup.position;
-    var canMove;
 
     switch (this.isMoving) {
       case KEY_LEFT: {
@@ -89,11 +89,12 @@ class Player extends Engine {
       }
     }
 
-    if (pos.x % tileSize === 0 && pos.y % tileSize === 0) {
+    if (this.isMoving && pos.x % tileSize === 0 && pos.y % tileSize === 0) {
+      GAME.engine.world.checkEvent(this.getTiledPosition());
       this.isMoving = false;
     }
 
-    if (this.isMoving === false) {
+    if (!this.isMoving && this.canMove) {
       var currentPos;
       var isArrowPress = this.keys.left.getState() || this.keys.right.getState() || this.keys.up.getState() || this.keys.down.getState();
 
@@ -142,9 +143,11 @@ class Player extends Engine {
     };
   }
 
-  setPosition(position) {
-    this._spriteGroup.position.x = (position.x !== undefined) ? position.x : this._spriteGroup.position.x;
-    this._spriteGroup.position.y = (position.y !== undefined) ? position.y : this._spriteGroup.position.y;
+  setPosition(pos) {
+    this.isMoving = false;
+
+    this._spriteGroup.position.x = (pos.x !== undefined) ? pos.x : this._spriteGroup.position.x;
+    this._spriteGroup.position.y = (pos.y !== undefined) ? pos.y : this._spriteGroup.position.y;
   }
 
   getTiledPosition() {
@@ -155,8 +158,14 @@ class Player extends Engine {
   }
 
   setTiledPosition(pos) {
+    this.isMoving = false;
+
     this._spriteGroup.position.x = pos.x * GAME.options.maps.tileSize;
     this._spriteGroup.position.y = pos.y * GAME.options.maps.tileSize;
+  }
+
+  setMovementEnabled(val) {
+    this.canMove = val;
   }
 
   _initAnimations(tex) {

@@ -43,7 +43,7 @@ class Camera extends Engine {
     var playerPos = GAME.engine.player.getPosition();
 
     if (playerPos.x + (playerHitbox.width / 4) < GAME.options.stage.width / 4) {
-      this._container.position.x = 0;
+      this._container.position.x = 0.1;
     } else if (playerPos.x + (playerHitbox.width / 4) > GAME.engine.world.mapSize.width * GAME.options.maps.tileSize - GAME.options.stage.width / 4) {
       this._container.position.x = -(GAME.engine.world.mapSize.width * GAME.options.maps.tileSize - GAME.options.stage.width / 2) * 2;
     } else {
@@ -51,7 +51,7 @@ class Camera extends Engine {
     }
 
     if (playerPos.y + (playerHitbox.height / 2) < GAME.options.stage.height / 4) {
-      this._container.position.y = 0;
+      this._container.position.y = 0.1;
     } else if (playerPos.y + (playerHitbox.height / 2) > GAME.engine.world.mapSize.height * GAME.options.maps.tileSize - GAME.options.stage.height / 4) {
       this._container.position.y = -(GAME.engine.world.mapSize.height * GAME.options.maps.tileSize - GAME.options.stage.height / 2) * 2;
     } else {

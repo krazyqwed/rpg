@@ -1,7 +1,7 @@
 import Engine from '../Engine';
-import { objectClone } from '../mixins';
 import TiledLoader from './TiledLoader';
 import Npc from './Npc';
+import EventRunner from './EventRunner';
 
 var GAME;
 
@@ -12,44 +12,111 @@ class World extends Engine {
 
     this.NAME = 'World';
 
-    this.assetsLoaded = false;
-    this.loader;
-    this.tilemap = {};
-    this.tileSize = GAME.options.maps.tileSize;
+    this.mapCache = {};
+
+    this.mapContainer = {};
+
+    this.tilemap;
+    this.tileSize;
     this.mapSize;
-    this.tiledLoader = new TiledLoader(GAME);
-    this.mapLoader = new PIXI.loaders.Loader();
-    this.mapTiles = [];
+    this.tiledLoader;
+    this.mapLoader;
+    this.mapTiles;
+    this.npcs;
+    this.events;
   }
 
   init() {
     super.init();
   }
 
-  load() {
+  _reset() {
+    for (var i in this.mapContainer) {
+      this.mapContainer[i].removeChildren();
+    }
+
+    this.tilemap = {};
+    this.tileSize = GAME.options.maps.tileSize;
+    this.mapSize;
+    this.tiledLoader = new TiledLoader(GAME);
+    this.mapLoader = new PIXI.loaders.Loader();
+    this.mapTiles = [];
+    this.npcs = [];
+    this.events = [];
+  }
+
+  _cleanCache() {
+    this.mapCache = {};
+  }
+
+  load(map, playerPosition) {
     super.load();
+
+    this._reset();
+
+    GAME.engine.player.setMovementEnabled(false);
 
     var p = new promise.Promise();
 
-    var map = 'map_1';
+    var npcs = map + '_npcs';
+    var events = map + '_events';
 
     this.tiledLoader.load()
     .then(() => {
-      this.mapLoader.add(map, 'resources/maps/' + map + '.json');
-      this.mapLoader.load((loader, res) => {
-        this._buildMap(res[map].data);
-        this._placeNPC();
+      if (typeof this.mapCache[map] === 'undefined') {
+        this.mapLoader.add(map, 'resources/maps/' + map + '.json');
+        this.mapLoader.add(npcs, 'resources/maps/' + npcs + '.json');
+        this.mapLoader.add(events, 'resources/maps/' + events + '.json');
+        this.mapLoader.load((loader, res) => {
+          this.mapCache[map] = {
+            map: res[map],
+            npcs: res[npcs],
+            events: res[events]
+          };
+
+          this._buildMap(res[map].data);
+          this._placeNPCs(this.mapCache[map].npcs.data);
+          this._placeEvents(this.mapCache[map].events.data);
+
+          if (playerPosition) {
+            GAME.engine.player.setTiledPosition({
+              x: playerPosition[0],
+              y: playerPosition[1]
+            });
+          }
+
+          GAME.engine.player.setMovementEnabled(true);
+
+          p.done();
+        });
+      } else {
+        this._buildMap(this.mapCache[map].map.data);
+        this._placeNPCs(this.mapCache[map].npcs.data);
+        this._placeEvents(this.mapCache[map].events.data);
+
+        if (playerPosition) {
+          GAME.engine.player.setTiledPosition({
+            x: playerPosition[0],
+            y: playerPosition[1]
+          });
+        }
+
+        GAME.engine.player.setMovementEnabled(true);
+
         p.done();
-      });
+      }
     });
 
     return p;
   }
 
+  warp(map, pos) {
+    return this.load(map, pos);
+  }
+
   _buildMap(map) {
     var data = map.data;
     var layers = data.length;
-    var mapContainer = {};
 
     this.mapSize = {
       width: map.width,
@@ -60,8 +127,8 @@ class World extends Engine {
       var aboveLayer = layer + GAME.options.maps.playerLayer;
 
       this.mapTiles[layer] = {};
-      mapContainer[layer] = new PIXI.Container();
-      mapContainer[aboveLayer] = new PIXI.Container();
+      this.mapContainer[layer] = new PIXI.Container();
+      this.mapContainer[aboveLayer] = new PIXI.Container();
 
       for (var i = 0; i < data[layer].length; ++i) {
         var tileData = data[layer][i];
@@ -81,9 +148,9 @@ class World extends Engine {
             tile = this._createTile(map, i, tileData);
 
             if (this.tiledLoader.textures[tileData].__abovePlayer) {
-              mapContainer[aboveLayer].addChild(tile);
+              this.mapContainer[aboveLayer].addChild(tile);
             } else {
-              mapContainer[layer].addChild(tile);
+              this.mapContainer[layer].addChild(tile);
             }
 
             this.mapTiles[layer][x][y] = this.tiledLoader.textures[tileData];
@@ -108,20 +175,20 @@ class World extends Engine {
           tileContainer.addChild(tile);
 
           if (this.tiledLoader.textures[tileData[0]].__abovePlayer) {
-            mapContainer[aboveLayer].addChild(tileContainer);
+            this.mapContainer[aboveLayer].addChild(tileContainer);
           } else {
-            mapContainer[layer].addChild(tileContainer);
+            this.mapContainer[layer].addChild(tileContainer);
           }
 
           this.mapTiles[layer][x][y] = this.tiledLoader.textures[tileData[0]];
         }
       }
 
-      mapContainer[layer].position.z = parseInt(layer) + 1;
-      GAME.engine.camera.getContainer().addChild(mapContainer[layer]);
+      this.mapContainer[layer].position.z = parseInt(layer) + 1;
+      GAME.engine.camera.getContainer().addChild(this.mapContainer[layer]);
 
-      mapContainer[aboveLayer].position.z = parseInt(aboveLayer) + 1;
-      GAME.engine.camera.getContainer().addChild(mapContainer[aboveLayer]);
+      this.mapContainer[aboveLayer].position.z = parseInt(aboveLayer) + 1;
+      GAME.engine.camera.getContainer().addChild(this.mapContainer[aboveLayer]);
     }
   }
 
@@ -159,10 +226,28 @@ class World extends Engine {
     return tile;
   }
 
-  _placeNPC() {
-    var npc = new Npc(GAME);
-    npc.setAction('Move', ['down', 'right', 'right', 'up', 'left', 'left', 'down', 'right', 'right', 'up', 'left', 'left', 'down', 'right', 'right', 'up', 'left', 'left', 'down', 'right', 'right', 'up', 'left', 'left', 'down', 'right', 'right', 'up', 'left', 'left', 'down', 'right', 'right', 'up', 'left', 'left', 'down', 'right', 'right', 'up', 'left', 'left', 'down', 'right', 'right', 'up', 'left', 'left', 'down', 'right', 'right', 'up', 'left', 'left']);
-    npc.setAction('Turn', 'down');
+  _placeNPCs(npcs) {
+    for (var i in npcs) {
+      var options = {};
+      var npc = new Npc(GAME, options);
+
+      npc.setAction('Move', ['down', 'right', 'right', 'up', 'left', 'left', 'down', 'right', 'right', 'up', 'left', 'left', 'down', 'right', 'right', 'up', 'left', 'left', 'down', 'right', 'right', 'up', 'left', 'left', 'down', 'right', 'right', 'up', 'left', 'left', 'down', 'right', 'right', 'up', 'left', 'left', 'down', 'right', 'right', 'up', 'left', 'left', 'down', 'right', 'right', 'up', 'left', 'left', 'down', 'right', 'right', 'up', 'left', 'left']);
+      npc.setAction('Turn', 'down');
+
+      this.npcs.push(npc);
+    }
+  }
+
+  _placeEvents(events) {
+    for (var i in events) {
+      var event = new EventRunner(GAME, events[i]);
+
+      if (typeof events[i].position !== 'undefined') {
+        this.events[events[i].position[0] + '_' + events[i].position[1]] = event;
+      } else {
+        this.events[i] = event;
+      }
+    }
   }
 
   _getBoundaries(x, y) {
@@ -177,9 +262,17 @@ class World extends Engine {
         typeof this.mapTiles[l][x - 1] !== 'undefined' ? this.mapTiles[l][x - 1][y] : undefined
       ];
 
+      var eq = [
+        true,
+        y > 0,
+        x < this.mapSize.width - 1,
+        y < this.mapSize.height - 1,
+        x > 0
+      ];
+
       for (var i = 0; i < directions.length; ++i) {
         if (typeof directions[i] !== 'undefined') {
-          if (y > 0 && typeof directions[i].__void === 'undefined' && directions[i].__abovePlayer === false) {
+          if (eq[i] && typeof directions[i].__void === 'undefined' && directions[i].__abovePlayer === false) {
             boundaries[i] = directions[i];
           } else if (directions[i].__abovePlayer === true) {
             boundaries[i] = { __blocking: false };
@@ -216,6 +309,12 @@ class World extends Engine {
     }
 
     return false;
+  }
+
+  checkEvent(pos) {
+    if (typeof this.events[pos.x + '_' + pos.y] !== 'undefined') {
+      this.events[pos.x + '_' + pos.y].run('touch');
+    }
   }
 
   update() {
