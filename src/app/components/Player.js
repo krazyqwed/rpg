@@ -49,9 +49,9 @@ class Player extends Engine {
 
     this._spriteGroup.pivot.x = 12;
     this._spriteGroup.pivot.y = 24;
-    this._spriteGroup.position.x = 96;
-    this._spriteGroup.position.y = 384;
     this._spriteGroup.position.z = GAME.options.maps.playerLayer;
+
+    this.setTiledPosition({ x: 30, y: 90 });
 
     GAME.engine.camera.getContainer().addChild(this._spriteGroup);
 
@@ -142,6 +142,11 @@ class Player extends Engine {
     };
   }
 
+  setPosition(position) {
+    this._spriteGroup.position.x = (position.x !== undefined) ? position.x : this._spriteGroup.position.x;
+    this._spriteGroup.position.y = (position.y !== undefined) ? position.y : this._spriteGroup.position.y;
+  }
+
   getTiledPosition() {
     return {
       x: Math.ceil(this._spriteGroup.position.x / GAME.options.maps.tileSize),
@@ -149,9 +154,9 @@ class Player extends Engine {
     };
   }
 
-  setPosition(position) {
-    this._spriteGroup.position.x = (position.x !== undefined) ? position.x : this._spriteGroup.position.x;
-    this._spriteGroup.position.y = (position.y !== undefined) ? position.y : this._spriteGroup.position.y;
+  setTiledPosition(pos) {
+    this._spriteGroup.position.x = pos.x * GAME.options.maps.tileSize;
+    this._spriteGroup.position.y = pos.y * GAME.options.maps.tileSize;
   }
 
   _initAnimations(tex) {

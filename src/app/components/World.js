@@ -169,34 +169,22 @@ class World extends Engine {
     var boundaries = ['all', 'all', 'all', 'all', 'all'];
 
     for (var l = 0; l < this.mapTiles.length; ++l) {
-      if (typeof this.mapTiles[l][x][y].__void === 'undefined' && this.mapTiles[l][x][y].__abovePlayer === false) {
-        boundaries[0] = this.mapTiles[l][x][y];
-      } else if (this.mapTiles[l][x][y].__abovePlayer === true) {
-        boundaries[0] = { __blocking: false };
-      }
+      var directions = [
+        this.mapTiles[l][x][y],
+        typeof this.mapTiles[l][x][y - 1] !== 'undefined' ? this.mapTiles[l][x][y - 1] : undefined,
+        typeof this.mapTiles[l][x + 1] !== 'undefined' ? this.mapTiles[l][x + 1][y] : undefined,
+        typeof this.mapTiles[l][x][y + 1] !== 'undefined' ? this.mapTiles[l][x][y + 1] : undefined,
+        typeof this.mapTiles[l][x - 1] !== 'undefined' ? this.mapTiles[l][x - 1][y] : undefined
+      ];
 
-      if (y > 0 && typeof this.mapTiles[l][x][y - 1].__void === 'undefined' && this.mapTiles[l][x][y - 1].__abovePlayer === false) {
-        boundaries[1] = this.mapTiles[l][x][y - 1];
-      } else if (this.mapTiles[l][x][y - 1].__abovePlayer === true) {
-        boundaries[1] = { __blocking: false };
-      }
-
-      if (x < this.mapSize.width - 1 && typeof this.mapTiles[l][x + 1][y].__void === 'undefined' && this.mapTiles[l][x + 1][y].__abovePlayer === false) {
-        boundaries[2] = this.mapTiles[l][x + 1][y];
-      } else if (this.mapTiles[l][x + 1][y].__abovePlayer === true) {
-        boundaries[2] = { __blocking: false };
-      }
-
-      if (y < this.mapSize.height - 1 && typeof this.mapTiles[l][x][y + 1].__void === 'undefined' && this.mapTiles[l][x][y + 1].__abovePlayer === false) {
-        boundaries[3] = this.mapTiles[l][x][y + 1];
-      } else if (this.mapTiles[l][x][y + 1].__abovePlayer === true) {
-        boundaries[3] = { __blocking: false };
-      }
-
-      if (x > 0 && typeof this.mapTiles[l][x - 1][y].__void === 'undefined' && this.mapTiles[l][x - 1][y].__abovePlayer === false) {
-        boundaries[4] = this.mapTiles[l][x - 1][y];
-      } else if (this.mapTiles[l][x - 1][y].__abovePlayer === true) {
-        boundaries[4] = { __blocking: false };
+      for (var i = 0; i < directions.length; ++i) {
+        if (typeof directions[i] !== 'undefined') {
+          if (y > 0 && typeof directions[i].__void === 'undefined' && directions[i].__abovePlayer === false) {
+            boundaries[i] = directions[i];
+          } else if (directions[i].__abovePlayer === true) {
+            boundaries[i] = { __blocking: false };
+          }
+        }
       }
     }
 
