@@ -91,6 +91,7 @@ class Player extends Engine {
 
     if (this.isMoving && pos.x % tileSize === 0 && pos.y % tileSize === 0) {
       GAME.engine.world.checkEvent(this.getTiledPosition());
+      GAME.engine.camera.limitDraw();
       this.isMoving = false;
     }
 

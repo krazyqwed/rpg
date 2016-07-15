@@ -61,6 +61,29 @@ class Camera extends Engine {
     this._container.children.sort(this._depthCompare.bind(this));
   }
 
+  limitDraw() {
+    for (var i in GAME.engine.world.mapContainer) {
+      var layer = GAME.engine.world.mapContainer[i];
+
+      for (var j = 0; j < layer.length; ++j) {
+        var group = layer.children[j];
+
+        for (var k = 0; k < group.children.length; ++k) {
+          var pos = {
+            x: layer.children[k].x,
+            y: layer.children[k].y
+          };
+          
+          if (this.objectIsVisible(pos, 1)) {
+            layer.children[k].visible = true;
+          } else {
+            layer.children[k].visible = false;
+          }
+        }
+      }
+    }
+  }
+
   _depthCompare(a, b) {
     var az = a.position.z;
     var bz = b.position.z;

@@ -127,8 +127,12 @@ class World extends Engine {
       var aboveLayer = layer + GAME.options.maps.playerLayer;
 
       this.mapTiles[layer] = {};
-      this.mapContainer[layer] = new PIXI.Container();
-      this.mapContainer[aboveLayer] = new PIXI.Container();
+      this.mapContainer[layer] = {};
+      this.mapContainer[layer]['container'] = new PIXI.Container();
+      this.mapContainer[layer]['particleContainer'] = new PIXI.particles.ParticleContainer();
+      this.mapContainer[aboveLayer] = {};
+      this.mapContainer[aboveLayer]['container'] = new PIXI.Container();
+      this.mapContainer[aboveLayer]['particleContainer'] = new PIXI.particles.ParticleContainer();
 
       for (var i = 0; i < data[layer].length; ++i) {
         var tileData = data[layer][i];
@@ -147,48 +151,71 @@ class World extends Engine {
           } else {
             tile = this._createTile(map, i, tileData);
 
-            if (this.tiledLoader.textures[tileData].__abovePlayer) {
-              this.mapContainer[aboveLayer].addChild(tile);
+            var textureData = this.tiledLoader.textures[tileData];
+
+            if (textureData.__abovePlayer) {
+              if (textureData.__animation) {
+                this.mapContainer[aboveLayer]['container'].addChild(tile);
+              } else {
+                this.mapContainer[aboveLayer]['particleContainer'].addChild(tile);
+              }
             } else {
-              this.mapContainer[layer].addChild(tile);
+              if (textureData.__animation) {
+                this.mapContainer[layer]['container'].addChild(tile);
+              } else {
+                this.mapContainer[layer]['particleContainer'].addChild(tile);
+              }
             }
 
-            this.mapTiles[layer][x][y] = this.tiledLoader.textures[tileData];
+            this.mapTiles[layer][x][y] = textureData;
           }
         } else {
-          // TopLeft
-          var tileContainer = new PIXI.Container();
+          var textureData = this.tiledLoader.textures[tileData[0]];
 
-          tile = this._createFragmentTile(map, i, tileData, 1);
-          tileContainer.addChild(tile);
+          var tileTL = this._createFragmentTile(map, i, tileData, 1);
+          var tileTR = this._createFragmentTile(map, i, tileData, 2, 12);
+          var tileBL = this._createFragmentTile(map, i, tileData, 3, 0, 12);
+          var tileBR = this._createFragmentTile(map, i, tileData, 4, 12, 12);
 
-          // TopRight
-          tile = this._createFragmentTile(map, i, tileData, 2, 12);
-          tileContainer.addChild(tile);
-
-          // BottomLeft
-          tile = this._createFragmentTile(map, i, tileData, 3, 0, 12);
-          tileContainer.addChild(tile);
-
-          // BottomRight
-          tile = this._createFragmentTile(map, i, tileData, 4, 12, 12);
-          tileContainer.addChild(tile);
-
-          if (this.tiledLoader.textures[tileData[0]].__abovePlayer) {
-            this.mapContainer[aboveLayer].addChild(tileContainer);
+          if (textureData.__abovePlayer) {
+            if (textureData.__animation) {
+              this.mapContainer[aboveLayer]['container'].addChild(tileTL);
+              this.mapContainer[aboveLayer]['container'].addChild(tileTR);
+              this.mapContainer[aboveLayer]['container'].addChild(tileBL);
+              this.mapContainer[aboveLayer]['container'].addChild(tileBR);
+            } else {
+              this.mapContainer[aboveLayer]['particleContainer'].addChild(tileTL);
+              this.mapContainer[aboveLayer]['particleContainer'].addChild(tileTR);
+              this.mapContainer[aboveLayer]['particleContainer'].addChild(tileBL);
+              this.mapContainer[aboveLayer]['particleContainer'].addChild(tileBR);
+            }
           } else {
-            this.mapContainer[layer].addChild(tileContainer);
+            if (textureData.__animation) {
+              this.mapContainer[layer]['container'].addChild(tileTL);
+              this.mapContainer[layer]['container'].addChild(tileTR);
+              this.mapContainer[layer]['container'].addChild(tileBL);
+              this.mapContainer[layer]['container'].addChild(tileBR);
+            } else {
+              this.mapContainer[layer]['particleContainer'].addChild(tileTL);
+              this.mapContainer[layer]['particleContainer'].addChild(tileTR);
+              this.mapContainer[layer]['particleContainer'].addChild(tileBL);
+              this.mapContainer[layer]['particleContainer'].addChild(tileBR);
+            }
           }
 
-          this.mapTiles[layer][x][y] = this.tiledLoader.textures[tileData[0]];
+          this.mapTiles[layer][x][y] = textureData;
         }
       }
 
-      this.mapContainer[layer].position.z = parseInt(layer) + 1;
-      GAME.engine.camera.getContainer().addChild(this.mapContainer[layer]);
+      this.mapContainer[layer]['container'].position.z = parseInt(layer) + 1;
+      GAME.engine.camera.getContainer().addChild(this.mapContainer[layer]['container']);
+      this.mapContainer[layer]['particleContainer'].position.z = parseInt(layer) + 1;
+      GAME.engine.camera.getContainer().addChild(this.mapContainer[layer]['particleContainer']);
 
-      this.mapContainer[aboveLayer].position.z = parseInt(aboveLayer) + 1;
-      GAME.engine.camera.getContainer().addChild(this.mapContainer[aboveLayer]);
+      this.mapContainer[aboveLayer]['container'].position.z = parseInt(aboveLayer) + 1;
+      GAME.engine.camera.getContainer().addChild(this.mapContainer[aboveLayer]['container']);
+      this.mapContainer[aboveLayer]['particleContainer'].position.z = parseInt(aboveLayer) + 1;
+      GAME.engine.camera.getContainer().addChild(this.mapContainer[aboveLayer]['particleContainer']);
     }
   }
 
