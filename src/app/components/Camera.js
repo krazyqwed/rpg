@@ -24,12 +24,10 @@ class Camera extends Engine {
 
     var p = new promise.Promise();
 
-    var uniforms = {
-      customUniform: { type: '1f', value: 0.5 }
-    };
+    var customShader = new PIXI.Filter('', shader);
 
-    var customShader = new PIXI.Filter('', shader, uniforms);
     GAME.camera.filters = [customShader];
+    GAME.camera.filterArea = new PIXI.Rectangle(0, 0, GAME.options.stage.width, GAME.options.stage.height);
 
     p.done();
 
@@ -41,21 +39,37 @@ class Camera extends Engine {
 
     var playerHitbox = GAME.engine.player.getHitbox();
     var playerPos = GAME.engine.player.getPosition();
+    var smallerX = false;
+    var smallerY = false;
 
-    if (playerPos.x + (playerHitbox.width / 4) < GAME.options.stage.width / 4) {
-      this._container.position.x = 0.1;
-    } else if (playerPos.x + (playerHitbox.width / 4) > GAME.engine.world.mapSize.width * GAME.options.maps.tileSize - GAME.options.stage.width / 4) {
-      this._container.position.x = -(GAME.engine.world.mapSize.width * GAME.options.maps.tileSize - GAME.options.stage.width / 2) * 2;
-    } else {
-      this._container.position.x = -(playerPos.x + (playerHitbox.width / 4) - GAME.options.stage.width / 4) * 2;
+    if (GAME.engine.world.mapSize.width * GAME.options.maps.tileSize < GAME.options.stage.width) {
+      this._container.position.x = parseInt((GAME.options.stage.width - GAME.engine.world.mapSize.width * GAME.options.maps.tileSize) / 2 - (GAME.engine.world.mapSize.width * GAME.options.maps.tileSize) / 2);
+      smallerX = true;
     }
 
-    if (playerPos.y + (playerHitbox.height / 2) < GAME.options.stage.height / 4) {
-      this._container.position.y = 0.1;
-    } else if (playerPos.y + (playerHitbox.height / 2) > GAME.engine.world.mapSize.height * GAME.options.maps.tileSize - GAME.options.stage.height / 4) {
-      this._container.position.y = -(GAME.engine.world.mapSize.height * GAME.options.maps.tileSize - GAME.options.stage.height / 2) * 2;
-    } else {
-      this._container.position.y = -(playerPos.y + (playerHitbox.height / 2) - GAME.options.stage.height / 4) * 2;
+    if (GAME.engine.world.mapSize.height * GAME.options.maps.tileSize < GAME.options.stage.height) {
+      this._container.position.y = parseInt((GAME.options.stage.height - GAME.engine.world.mapSize.height * GAME.options.maps.tileSize) / 2 - (GAME.engine.world.mapSize.height * GAME.options.maps.tileSize) / 2);
+      smallerY = true;
+    }
+
+    if (!smallerX) {
+      if (playerPos.x + (playerHitbox.width / 4) < GAME.options.stage.width / 4) {
+        this._container.position.x = 0.1;
+      } else if (playerPos.x + (playerHitbox.width / 4) > GAME.engine.world.mapSize.width * GAME.options.maps.tileSize - GAME.options.stage.width / 4) {
+        this._container.position.x = -(GAME.engine.world.mapSize.width * GAME.options.maps.tileSize - GAME.options.stage.width / 2) * 2;
+      } else {
+        this._container.position.x = -(playerPos.x + (playerHitbox.width / 4) - GAME.options.stage.width / 4) * 2;
+      }
+    }
+
+    if (!smallerX) {
+      if (playerPos.y + (playerHitbox.height / 2) < GAME.options.stage.height / 4) {
+        this._container.position.y = 0.1;
+      } else if (playerPos.y + (playerHitbox.height / 2) > GAME.engine.world.mapSize.height * GAME.options.maps.tileSize - GAME.options.stage.height / 4) {
+        this._container.position.y = -(GAME.engine.world.mapSize.height * GAME.options.maps.tileSize - GAME.options.stage.height / 2) * 2;
+      } else {
+        this._container.position.y = -(playerPos.y + (playerHitbox.height / 2) - GAME.options.stage.height / 4) * 2;
+      }
     }
 
     this._container.children.sort(this._depthCompare.bind(this));

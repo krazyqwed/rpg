@@ -5,7 +5,6 @@ export var selectiveColor = `
   varying vec4 vColor;
 
   uniform sampler2D uSampler;
-  uniform float customUniform;
 
   void main(void)
   {

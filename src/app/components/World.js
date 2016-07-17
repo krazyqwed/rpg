@@ -32,7 +32,9 @@ class World extends Engine {
 
   _reset() {
     for (var i in this.mapContainer) {
-      this.mapContainer[i].removeChildren();
+      for (var j in this.mapContainer[i]) {
+        this.mapContainer[i][j].removeChildren();
+      }
     }
 
     this.tilemap = {};

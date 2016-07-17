@@ -38,7 +38,7 @@ class TiledLoader extends Engine {
 
           this.textures[j] = PIXI.Texture.fromFrame(j);
 
-          if (typeof frame.fragment !== 'undefined') {
+          if (typeof frame.fragment !== 'undefined' && frame.fragment !== false) {
             this.textures[j + '_fragments'] = [];
 
             for (var f = 0; f < 10; ++f) {
@@ -52,7 +52,7 @@ class TiledLoader extends Engine {
             }
           }
 
-          if (typeof frame.animation !== 'undefined') {
+          if (typeof frame.animation !== 'undefined' && frame.animation !== false) {
             var textureArray = [];
 
             for (var a = 0; a < frame.animation.length; ++a) {
@@ -63,7 +63,7 @@ class TiledLoader extends Engine {
 
             this.textures[j] = textureArray;
 
-            if (typeof this.textures[j + '_fragments'] !== 'undefined') {
+            if (typeof this.textures[j + '_fragments'] !== 'undefined' && this.textures[j + '_fragments'] !== false) {
               for (var af = 0; af < this.textures[j + '_fragments'].length; ++af) {
                 textureArray = [];
 
@@ -78,19 +78,19 @@ class TiledLoader extends Engine {
             }
           }
 
-          if (typeof frame.animation !== 'undefined') {
+          if (typeof frame.animation !== 'undefined' && frame.animation !== false) {
             this.textures[j].__animation = frame.animation;
           } else {
             this.textures[j].__animation = false;
           }
 
-          if (typeof frame.abovePlayer !== 'undefined') {
+          if (typeof frame.abovePlayer !== 'undefined' && frame.abovePlayer !== false) {
             this.textures[j].__abovePlayer = frame.abovePlayer;
           } else {
             this.textures[j].__abovePlayer = false;
           }
 
-          if (typeof frame.blocking !== 'undefined') {
+          if (typeof frame.blocking !== 'undefined' && frame.blocking !== false) {
             this.textures[j].__blocking = frame.blocking;
           } else {
             this.textures[j].__blocking = false;
