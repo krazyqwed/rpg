@@ -1,0 +1,15 @@
+[
+  {
+    "activation": "touch",
+    "position": [9, 13],
+    "events": [
+      {
+        "type": "warp",
+        "attributes": {
+          "to": "house",
+          "destination": [7, 7]
+        }
+      }
+    ]
+  }
+]

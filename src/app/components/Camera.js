@@ -1,5 +1,5 @@
 import Engine from '../Engine';
-import { selectiveColor as shader } from '../shaders';
+import shaders from '../shaders';
 
 var GAME;
 
@@ -11,12 +11,14 @@ class Camera extends Engine {
     this.NAME = 'Camera';
 
     this._container;
+    this._shaders = {};
   }
 
   init(container) {
     super.init();
 
-    this._container = container;
+    this._container = new PIXI.Container();
+    this._container.scale = { x: 2, y: 2 };
   }
 
   load() {
@@ -24,9 +26,9 @@ class Camera extends Engine {
 
     var p = new promise.Promise();
 
-    var customShader = new PIXI.Filter('', shader);
+    this._shaders['day_night'] = new PIXI.Filter('', shaders['day_night']);
 
-    GAME.camera.filters = [customShader];
+    GAME.camera.filters = this._objectToArray(this._shaders);
     GAME.camera.filterArea = new PIXI.Rectangle(0, 0, GAME.options.stage.width, GAME.options.stage.height);
 
     p.done();
@@ -79,20 +81,16 @@ class Camera extends Engine {
     for (var i in GAME.engine.world.mapContainer) {
       var layer = GAME.engine.world.mapContainer[i];
 
-      for (var j = 0; j < layer.length; ++j) {
-        var group = layer.children[j];
-
-        for (var k = 0; k < group.children.length; ++k) {
-          var pos = {
-            x: layer.children[k].x,
-            y: layer.children[k].y
-          };
-          
-          if (this.objectIsVisible(pos, 1)) {
-            layer.children[k].visible = true;
-          } else {
-            layer.children[k].visible = false;
-          }
+      for (var j = 0; j < layer.children.length; ++j) {
+        var pos = {
+          x: layer.children[j].x,
+          y: layer.children[j].y
+        };
+        
+        if (this.objectIsVisible(pos, 1)) {
+          layer.children[j].visible = true;
+        } else {
+          layer.children[j].visible = false;
         }
       }
     }
@@ -141,6 +139,31 @@ class Camera extends Engine {
     }
 
     return true;
+  }
+
+  setShader(shaderName, value, uniforms) {
+    if (value) {
+      if (!uniforms) {
+        uniforms = {};
+      }
+
+      this._shaders[shaderName] = new PIXI.Filter('', shaders[shaderName], uniforms);
+    } else {
+      delete this._shaders[shaderName];
+    }
+
+
+    GAME.camera.filters = this._objectToArray(this._shaders);
+  }
+
+  _objectToArray(object) {
+    var array = [];
+
+    for (var i in object) {
+      array.push(object[i]);
+    }
+
+    return array;
   }
 }
 

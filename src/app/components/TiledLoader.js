@@ -9,12 +9,18 @@ class TiledLoader extends Engine {
 
     this.NAME = 'TiledLoader';
 
+    this.lightLoader;
+    this.lights = [
+      'light_fire_small'
+    ];
     this.tilemapLoader;
     this.tilesets = [
-      'tilemap_1',
-      'tilemap_2'
+      'tileset_1',
+      'tileset_2',
+      'tileset_3'
     ];
     this.textures = {};
+    this.lightTextures = {};
     this.animationSpeed = 0.065;
   }
 
@@ -43,11 +49,11 @@ class TiledLoader extends Engine {
 
             for (var f = 0; f < 10; ++f) {
               var fragment = this.textures[j].clone();
-              fragment.frame = new PIXI.Rectangle(fragment.frame.x, f * 12, 12, 12);
+              fragment.frame = new PIXI.Rectangle(fragment.frame.x, f * 12 + fragment.frame.y, 12, 12);
               this.textures[j + '_fragments'].push(fragment);
 
               fragment = this.textures[j].clone();
-              fragment.frame = new PIXI.Rectangle(fragment.frame.x + 12, f * 12, 12, 12);
+              fragment.frame = new PIXI.Rectangle(fragment.frame.x + 12, f * 12 + fragment.frame.y, 12, 12);
               this.textures[j + '_fragments'].push(fragment);
             }
           }
@@ -95,10 +101,28 @@ class TiledLoader extends Engine {
           } else {
             this.textures[j].__blocking = false;
           }
+
+          if (typeof frame.lightSource !== 'undefined' && frame.lightSource !== false) {
+            this.textures[j].__lightSource = frame.lightSource;
+          } else {
+            this.textures[j].__lightSource = false;
+          }
         }
       }
 
-      p.done();
+      this.lightLoader = new PIXI.loaders.Loader();
+
+      for (var i in this.lights) {
+        this.lightLoader.add(this.lights[i], 'resources/tilesets/' + this.lights[i] + '.png');
+      }
+
+      this.lightLoader.load((loader, res) => {
+        for (var i in this.lights) {
+          this.lightTextures[this.lights[i]] = res[this.lights[i]];
+        }
+
+        p.done();
+      });
     });
 
     return p;

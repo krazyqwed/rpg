@@ -34,8 +34,7 @@ class Game {
     this.engine.world.init();
     this.engine.charLoader.init();
     this.engine.player.init();
-    this.engine.camera.init(new PIXI.Container());
-    this.engine.camera.getContainer().scale = { x: 2, y: 2 };
+    this.engine.camera.init();
     this.camera.addChild(this.engine.camera.getContainer());
 
     this.camera.width = this.options.stage.width;
@@ -57,7 +56,7 @@ class Game {
   load() {
     this.engine.camera.load()
     .then(() => this.engine.charLoader.load())
-    .then(() => this.engine.world.load('map_1'))
+    .then(() => this.engine.world.load('house'))
     .then(() => this.engine.player.load())
     .then(() => this.update());
   }

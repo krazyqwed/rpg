@@ -52,7 +52,7 @@ class Player extends Engine {
     this._spriteGroup.pivot.y = 24;
     this._spriteGroup.position.z = GAME.options.maps.playerLayer;
 
-    this.setTiledPosition({ x: 3, y: 9 });
+    this.setTiledPosition({ x: 7, y: 9 });
 
     GAME.engine.camera.getContainer().addChild(this._spriteGroup);
 

@@ -2,6 +2,7 @@ import Engine from '../Engine';
 import TiledLoader from './TiledLoader';
 import Npc from './Npc';
 import EventRunner from './EventRunner';
+import shaders from '../shaders';
 
 var GAME;
 
@@ -32,9 +33,7 @@ class World extends Engine {
 
   _reset() {
     for (var i in this.mapContainer) {
-      for (var j in this.mapContainer[i]) {
-        this.mapContainer[i][j].removeChildren();
-      }
+      this.mapContainer[i].removeChildren();
     }
 
     this.tilemap = {};
@@ -76,40 +75,84 @@ class World extends Engine {
             events: res[events]
           };
 
-          this._buildMap(res[map].data);
-          this._placeNPCs(this.mapCache[map].npcs.data);
-          this._placeEvents(this.mapCache[map].events.data);
-
-          if (playerPosition) {
-            GAME.engine.player.setTiledPosition({
-              x: playerPosition[0],
-              y: playerPosition[1]
-            });
-          }
-
-          GAME.engine.player.setMovementEnabled(true);
+          this._afterLoad(map, playerPosition);
 
           p.done();
         });
       } else {
-        this._buildMap(this.mapCache[map].map.data);
-        this._placeNPCs(this.mapCache[map].npcs.data);
-        this._placeEvents(this.mapCache[map].events.data);
-
-        if (playerPosition) {
-          GAME.engine.player.setTiledPosition({
-            x: playerPosition[0],
-            y: playerPosition[1]
-          });
-        }
-
-        GAME.engine.player.setMovementEnabled(true);
+        this._afterLoad(map, playerPosition);
 
         p.done();
       }
     });
 
     return p;
+  }
+
+  _afterLoad(map, playerPosition) {
+    this._buildMap(this.mapCache[map].map.data);
+    this._placeNPCs(this.mapCache[map].npcs.data);
+    this._placeEvents(this.mapCache[map].events.data);
+
+    if (typeof this.mapCache[map].map.data.interior !== 'undefined' && this.mapCache[map].map.data.interior === true) {
+      var lightmapFilter = new PIXI.Filter(
+        '',
+        shaders['lightmap'],
+        {
+          uLightmap: {
+            type: 'sampler2D',
+            value: this.tiledLoader.lightTextures['light_fire_small'].texture
+          },
+          resolution: {
+            type: '2f',
+            value: new Float32Array([2.0, 2.0])
+          },
+          ambientColor: {
+            type: '4f',
+            value: new Float32Array([0.3, 0.05, 0.0, 1.0])
+          }
+        }
+      );
+
+      var lightTexture = new PIXI.Texture(this.tiledLoader.lightTextures['light_fire_small'].texture);
+      var lightTexture2 = new PIXI.Texture(this.tiledLoader.lightTextures['light_fire_small'].texture);
+      
+      var lightSprite = new PIXI.Sprite(lightTexture);
+      var lightSprite2 = new PIXI.Sprite(lightTexture2);
+
+      lightSprite2.x = 120;
+      lightSprite2.y = -100;
+      lightSprite.scale = { x: 0, y: 0 };
+      lightSprite2.scale = { x: 2, y: 2 };
+      
+      lightSprite.blendMode = PIXI.BLEND_MODES.ADD;
+      lightSprite2.blendMode = PIXI.BLEND_MODES.ADD;
+
+      var lightmapBg = new PIXI.Graphics();
+      lightmapBg.beginFill(0x000000);
+      lightmapBg.drawRect(0, 0, GAME.options.stage.width, GAME.options.stage.height);
+      lightmapBg.endFill();
+
+      var lightmapContainer = new PIXI.Container();
+      lightmapContainer.addChild(lightmapBg);
+      lightmapContainer.addChild(lightSprite);
+      lightmapContainer.addChild(lightSprite2);
+
+      lightmapContainer.position.z = 10000;
+
+      GAME.engine.camera.getContainer().addChild(lightmapContainer);
+
+      lightmapContainer.filters = [lightmapFilter];
+    }
+
+    if (playerPosition) {
+      GAME.engine.player.setTiledPosition({
+        x: playerPosition[0],
+        y: playerPosition[1]
+      });
+    }
+
+    GAME.engine.player.setMovementEnabled(true);
   }
 
   warp(map, pos) {
@@ -129,12 +172,8 @@ class World extends Engine {
       var aboveLayer = layer + GAME.options.maps.playerLayer;
 
       this.mapTiles[layer] = {};
-      this.mapContainer[layer] = {};
-      this.mapContainer[layer]['container'] = new PIXI.Container();
-      this.mapContainer[layer]['particleContainer'] = new PIXI.particles.ParticleContainer();
-      this.mapContainer[aboveLayer] = {};
-      this.mapContainer[aboveLayer]['container'] = new PIXI.Container();
-      this.mapContainer[aboveLayer]['particleContainer'] = new PIXI.particles.ParticleContainer();
+      this.mapContainer[layer] = new PIXI.Container();
+      this.mapContainer[aboveLayer] = new PIXI.Container();
 
       for (var i = 0; i < data[layer].length; ++i) {
         var tileData = data[layer][i];
@@ -156,17 +195,9 @@ class World extends Engine {
             var textureData = this.tiledLoader.textures[tileData];
 
             if (textureData.__abovePlayer) {
-              if (textureData.__animation) {
-                this.mapContainer[aboveLayer]['container'].addChild(tile);
-              } else {
-                this.mapContainer[aboveLayer]['particleContainer'].addChild(tile);
-              }
+              this.mapContainer[aboveLayer].addChild(tile);
             } else {
-              if (textureData.__animation) {
-                this.mapContainer[layer]['container'].addChild(tile);
-              } else {
-                this.mapContainer[layer]['particleContainer'].addChild(tile);
-              }
+              this.mapContainer[layer].addChild(tile);
             }
 
             this.mapTiles[layer][x][y] = textureData;
@@ -180,45 +211,29 @@ class World extends Engine {
           var tileBR = this._createFragmentTile(map, i, tileData, 4, 12, 12);
 
           if (textureData.__abovePlayer) {
-            if (textureData.__animation) {
-              this.mapContainer[aboveLayer]['container'].addChild(tileTL);
-              this.mapContainer[aboveLayer]['container'].addChild(tileTR);
-              this.mapContainer[aboveLayer]['container'].addChild(tileBL);
-              this.mapContainer[aboveLayer]['container'].addChild(tileBR);
-            } else {
-              this.mapContainer[aboveLayer]['particleContainer'].addChild(tileTL);
-              this.mapContainer[aboveLayer]['particleContainer'].addChild(tileTR);
-              this.mapContainer[aboveLayer]['particleContainer'].addChild(tileBL);
-              this.mapContainer[aboveLayer]['particleContainer'].addChild(tileBR);
-            }
+            this.mapContainer[aboveLayer].addChild(tileTL);
+            this.mapContainer[aboveLayer].addChild(tileTR);
+            this.mapContainer[aboveLayer].addChild(tileBL);
+            this.mapContainer[aboveLayer].addChild(tileBR);
           } else {
-            if (textureData.__animation) {
-              this.mapContainer[layer]['container'].addChild(tileTL);
-              this.mapContainer[layer]['container'].addChild(tileTR);
-              this.mapContainer[layer]['container'].addChild(tileBL);
-              this.mapContainer[layer]['container'].addChild(tileBR);
-            } else {
-              this.mapContainer[layer]['particleContainer'].addChild(tileTL);
-              this.mapContainer[layer]['particleContainer'].addChild(tileTR);
-              this.mapContainer[layer]['particleContainer'].addChild(tileBL);
-              this.mapContainer[layer]['particleContainer'].addChild(tileBR);
-            }
+            this.mapContainer[layer].addChild(tileTL);
+            this.mapContainer[layer].addChild(tileTR);
+            this.mapContainer[layer].addChild(tileBL);
+            this.mapContainer[layer].addChild(tileBR);
           }
 
           this.mapTiles[layer][x][y] = textureData;
         }
       }
 
-      this.mapContainer[layer]['container'].position.z = parseInt(layer) + 1;
-      GAME.engine.camera.getContainer().addChild(this.mapContainer[layer]['container']);
-      this.mapContainer[layer]['particleContainer'].position.z = parseInt(layer) + 1;
-      GAME.engine.camera.getContainer().addChild(this.mapContainer[layer]['particleContainer']);
+      this.mapContainer[layer].position.z = parseInt(layer) + 1;
+      GAME.engine.camera.getContainer().addChild(this.mapContainer[layer]);
 
-      this.mapContainer[aboveLayer]['container'].position.z = parseInt(aboveLayer) + 1;
-      GAME.engine.camera.getContainer().addChild(this.mapContainer[aboveLayer]['container']);
-      this.mapContainer[aboveLayer]['particleContainer'].position.z = parseInt(aboveLayer) + 1;
-      GAME.engine.camera.getContainer().addChild(this.mapContainer[aboveLayer]['particleContainer']);
+      this.mapContainer[aboveLayer].position.z = parseInt(aboveLayer) + 1;
+      GAME.engine.camera.getContainer().addChild(this.mapContainer[aboveLayer]);
     }
+
+    GAME.engine.camera.limitDraw();
   }
 
   _createTile(map, i, tileData) {
@@ -234,6 +249,7 @@ class World extends Engine {
 
     tile.position.x = (i % map.width) * 24;
     tile.position.y = (Math.floor(i / map.width) % map.height) * 24;
+    tile.visible = false;
 
     return tile;
   }
@@ -251,6 +267,7 @@ class World extends Engine {
 
     tile.position.x = (i % map.width) * 24 + xOffset;
     tile.position.y = (Math.floor(i / map.width) % map.height) * 24 + yOffset;
+    tile.visible = false;
 
     return tile;
   }
@@ -282,7 +299,7 @@ class World extends Engine {
   _getBoundaries(x, y) {
     var boundaries = ['all', 'all', 'all', 'all', 'all'];
 
-    for (var l = 0; l < this.mapTiles.length; ++l) {
+    for (var l in this.mapTiles) {
       var directions = [
         this.mapTiles[l][x][y],
         typeof this.mapTiles[l][x][y - 1] !== 'undefined' ? this.mapTiles[l][x][y - 1] : undefined,
@@ -303,7 +320,7 @@ class World extends Engine {
         if (typeof directions[i] !== 'undefined') {
           if (eq[i] && typeof directions[i].__void === 'undefined' && directions[i].__abovePlayer === false) {
             boundaries[i] = directions[i];
-          } else if (directions[i].__abovePlayer === true) {
+          } else if (!boundaries[i]['__blocking'] && directions[i].__abovePlayer === true) {
             boundaries[i] = { __blocking: false };
           }
         }

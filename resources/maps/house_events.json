@@ -1,0 +1,28 @@
+[
+  {
+    "activation": "touch",
+    "position": [7, 6],
+    "events": [
+      {
+        "type": "warp",
+        "attributes": {
+          "to": "inside",
+          "destination": [9, 12]
+        }
+      }
+    ]
+  },
+  {
+    "activation": "touch",
+    "position": [9, 14],
+    "events": [
+      {
+        "type": "warp",
+        "attributes": {
+          "to": "water",
+          "destination": [50, 50]
+        }
+      }
+    ]
+  }
+]
