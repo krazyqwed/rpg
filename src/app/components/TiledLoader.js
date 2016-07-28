@@ -9,10 +9,6 @@ class TiledLoader extends Engine {
 
     this.NAME = 'TiledLoader';
 
-    this.lightLoader;
-    this.lights = [
-      'light_fire_small'
-    ];
     this.tilemapLoader;
     this.tilesets = [
       'tileset_1',
@@ -20,7 +16,6 @@ class TiledLoader extends Engine {
       'tileset_3'
     ];
     this.textures = {};
-    this.lightTextures = {};
     this.animationSpeed = 0.065;
   }
 
@@ -110,19 +105,7 @@ class TiledLoader extends Engine {
         }
       }
 
-      this.lightLoader = new PIXI.loaders.Loader();
-
-      for (var i in this.lights) {
-        this.lightLoader.add(this.lights[i], 'resources/tilesets/' + this.lights[i] + '.png');
-      }
-
-      this.lightLoader.load((loader, res) => {
-        for (var i in this.lights) {
-          this.lightTextures[this.lights[i]] = res[this.lights[i]];
-        }
-
-        p.done();
-      });
+      p.done();
     });
 
     return p;

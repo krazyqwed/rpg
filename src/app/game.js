@@ -1,3 +1,4 @@
+import Light from './components/Light';
 import World from './components/World';
 import CharLoader from './components/CharLoader';
 import Player from './components/Player';
@@ -19,6 +20,7 @@ class Game {
     this.camera = new PIXI.Container();
     this.stats;
 
+    this.engine.light = new Light(this);
     this.engine.world = new World(this);
     this.engine.charLoader = new CharLoader(this);
     this.engine.player = new Player(this);
@@ -54,7 +56,8 @@ class Game {
   }
 
   load() {
-    this.engine.camera.load()
+    this.engine.light.load()
+    .then(() => this.engine.camera.load())
     .then(() => this.engine.charLoader.load())
     .then(() => this.engine.world.load('house'))
     .then(() => this.engine.player.load())

@@ -21,25 +21,44 @@ shaders['day_night'] = `
   }
 `;
 
-shaders['lightmap'] = `
-  precision mediump float;
+shaders['lightmap_vert'] = `
+attribute vec2 aVertexPosition;
+attribute vec2 aTextureCoord;
 
-  varying vec2 vTextureCoord;
-  
-  uniform sampler2D uSampler;
-  uniform sampler2D uLightmap;
-  uniform vec2 resolution;
-  uniform vec4 ambientColor;
+uniform mat3 projectionMatrix;
+uniform mat3 filterMatrix;
 
-  void main(void)
-  {
-    vec4 diffuseColor = texture2D(uSampler, vTextureCoord);
-    diffuseColor.a = 1.0 - diffuseColor.r;
+varying vec2 vTextureCoord;
+varying vec2 vFilterCoord;
 
-    diffuseColor.rgb = vec3(0, 0, 0);
+void main(void)
+{
+   gl_Position = vec4((projectionMatrix * vec3(aVertexPosition, 1.0)).xy, 0.0, 1.0);
+   vFilterCoord = ( filterMatrix * vec3( aTextureCoord, 1.0)  ).xy;
+   vTextureCoord = aTextureCoord;
+}
+`;
 
-    gl_FragColor = diffuseColor * 0.8;
-  }
+shaders['lightmap_frag'] = `
+varying vec2 vFilterCoord;
+varying vec2 vTextureCoord;
+
+uniform vec2 scale;
+
+uniform sampler2D uSampler;
+uniform sampler2D mapSampler;
+
+uniform vec4 filterClamp;
+
+void main(void)
+{
+   vec4 map =  texture2D(mapSampler, vFilterCoord);
+
+   map -= 0.5;
+   map.xy *= scale;
+
+   gl_FragColor = texture2D(uSampler, clamp(vec2(vTextureCoord.x + map.x, vTextureCoord.y + map.y), filterClamp.xy, filterClamp.zw));
+}
 `;
 
 export default shaders;

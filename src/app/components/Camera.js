@@ -11,7 +11,7 @@ class Camera extends Engine {
     this.NAME = 'Camera';
 
     this._container;
-    this._shaders = {};
+    this.shaders = {};
   }
 
   init(container) {
@@ -26,9 +26,9 @@ class Camera extends Engine {
 
     var p = new promise.Promise();
 
-    this._shaders['day_night'] = new PIXI.Filter('', shaders['day_night']);
+    this.shaders['day_night'] = new PIXI.Filter('', shaders['day_night']);
 
-    GAME.camera.filters = this._objectToArray(this._shaders);
+    GAME.camera.filters = this._objectToArray(this.shaders);
     GAME.camera.filterArea = new PIXI.Rectangle(0, 0, GAME.options.stage.width, GAME.options.stage.height);
 
     p.done();
@@ -141,19 +141,19 @@ class Camera extends Engine {
     return true;
   }
 
-  setShader(shaderName, value, uniforms) {
+  setShader(shaderName, value, uniforms, hasVertex) {
     if (value) {
       if (!uniforms) {
         uniforms = {};
       }
 
-      this._shaders[shaderName] = new PIXI.Filter('', shaders[shaderName], uniforms);
+      this.shaders[shaderName] = new PIXI.Filter(hasVertex ? shaders[shaderName + '_vert'] : '', shaders[shaderName], uniforms);
     } else {
-      delete this._shaders[shaderName];
+      delete this.shaders[shaderName];
     }
 
 
-    GAME.camera.filters = this._objectToArray(this._shaders);
+    GAME.camera.filters = this._objectToArray(this.shaders);
   }
 
   _objectToArray(object) {

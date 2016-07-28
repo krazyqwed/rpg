@@ -95,54 +95,18 @@ class World extends Engine {
     this._placeEvents(this.mapCache[map].events.data);
 
     if (typeof this.mapCache[map].map.data.interior !== 'undefined' && this.mapCache[map].map.data.interior === true) {
-      var lightmapFilter = new PIXI.Filter(
-        '',
-        shaders['lightmap'],
-        {
-          uLightmap: {
-            type: 'sampler2D',
-            value: this.tiledLoader.lightTextures['light_fire_small'].texture
-          },
-          resolution: {
-            type: '2f',
-            value: new Float32Array([2.0, 2.0])
-          },
-          ambientColor: {
-            type: '4f',
-            value: new Float32Array([0.3, 0.05, 0.0, 1.0])
-          }
-        }
-      );
-
-      var lightTexture = new PIXI.Texture(this.tiledLoader.lightTextures['light_fire_small'].texture);
-      var lightTexture2 = new PIXI.Texture(this.tiledLoader.lightTextures['light_fire_small'].texture);
-      
+      var lightTexture = new PIXI.Texture(GAME.engine.light.textures['displace'].texture);
       var lightSprite = new PIXI.Sprite(lightTexture);
-      var lightSprite2 = new PIXI.Sprite(lightTexture2);
 
-      lightSprite2.x = 120;
-      lightSprite2.y = -100;
-      lightSprite.scale = { x: 0, y: 0 };
-      lightSprite2.scale = { x: 2, y: 2 };
-      
-      lightSprite.blendMode = PIXI.BLEND_MODES.ADD;
-      lightSprite2.blendMode = PIXI.BLEND_MODES.ADD;
+      lightSprite.x = 200;
+      lightSprite.y = 0;
+      lightSprite.position.z = 10000;
+      lightSprite.scale = { x: 1, y: 1 };
 
-      var lightmapBg = new PIXI.Graphics();
-      lightmapBg.beginFill(0x000000);
-      lightmapBg.drawRect(0, 0, GAME.options.stage.width, GAME.options.stage.height);
-      lightmapBg.endFill();
+      GAME.engine.camera.getContainer().addChild(lightSprite);
 
-      var lightmapContainer = new PIXI.Container();
-      lightmapContainer.addChild(lightmapBg);
-      lightmapContainer.addChild(lightSprite);
-      lightmapContainer.addChild(lightSprite2);
-
-      lightmapContainer.position.z = 10000;
-
-      GAME.engine.camera.getContainer().addChild(lightmapContainer);
-
-      lightmapContainer.filters = [lightmapFilter];
+      GAME.camera.filters = [new PIXI.filters.LightmapFilter(lightSprite)];
+      //GAME.camera.filters = [GAME.engine.light.add(lightSprite)];
     }
 
     if (playerPosition) {
