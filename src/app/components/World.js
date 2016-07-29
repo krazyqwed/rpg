@@ -25,6 +25,8 @@ class World extends Engine {
     this.mapTiles;
     this.npcs;
     this.events;
+
+    this.lightSprite;
   }
 
   init() {
@@ -95,18 +97,15 @@ class World extends Engine {
     this._placeEvents(this.mapCache[map].events.data);
 
     if (typeof this.mapCache[map].map.data.interior !== 'undefined' && this.mapCache[map].map.data.interior === true) {
-      var lightTexture = new PIXI.Texture(GAME.engine.light.textures['displace'].texture);
-      var lightSprite = new PIXI.Sprite(lightTexture);
+      var lightTexture = new PIXI.Texture(GAME.engine.light.textures['light_fire_small'].texture);
+      this.lightSprite = new PIXI.Sprite(lightTexture);
 
-      lightSprite.x = 200;
-      lightSprite.y = 0;
-      lightSprite.position.z = 10000;
-      lightSprite.scale = { x: 1, y: 1 };
+      this.lightSprite.position.z = 10000;
+      this.lightSprite.scale = { x: 1, y: 1 };
 
-      GAME.engine.camera.getContainer().addChild(lightSprite);
+      GAME.engine.camera.getContainer().addChild(this.lightSprite);
 
-      GAME.camera.filters = [new PIXI.filters.LightmapFilter(lightSprite)];
-      //GAME.camera.filters = [GAME.engine.light.add(lightSprite)];
+      GAME.camera.filters = [new PIXI.filters.LightmapFilter(this.lightSprite)];
     }
 
     if (playerPosition) {
@@ -329,6 +328,11 @@ class World extends Engine {
 
   update() {
     super.update();
+
+    if (this.lightSprite) {
+      this.lightSprite.x = GAME.engine.player.getPosition().x + GAME.engine.player.getHitbox().width / 2 - this.lightSprite.width / 2;
+      this.lightSprite.y = GAME.engine.player.getPosition().y + GAME.engine.player.getHitbox().height / 2 - this.lightSprite.height / 2;
+    }
   }
 }
 
