@@ -1,10 +1,11 @@
 import Engine from '../Engine';
+import shaders from '../shaders';
 
 var GAME;
 
 class LightmapFilter extends PIXI.Filter {
   constructor(sprite, scale) {
-    super(GAME.engine.camera.shaders['lightmap_vert'], GAME.engine.camera.shaders['lightmap_frag']);
+    super(shaders['lightmap_vert'], shaders['lightmap_frag']);
 
     var maskMatrix = new PIXI.Matrix();
     sprite.renderable = false;
