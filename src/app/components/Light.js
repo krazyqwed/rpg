@@ -5,7 +5,7 @@ var GAME;
 
 class LightmapFilter extends PIXI.Filter {
   constructor(sprite, scale) {
-    super(false, shaders['lightmap_frag']);
+    super(shaders['lightmap_vert'], shaders['lightmap_frag']);
 
     var maskMatrix = new PIXI.Matrix();
     sprite.renderable = false;
@@ -56,7 +56,9 @@ class Light extends Engine {
     this.lightLoader;
     this.lights = [
       'light_fire_small',
-      'displace'
+      'light_fire_medium',
+      'light_fire_medium_yellow',
+      'light_fire_down_small_yellow'
     ];
     this.textures = {};
   }
