@@ -59,6 +59,8 @@ class Player extends Engine {
     this._initAnimations(GAME.engine.charLoader.characters[0].textures);
     this.setAnimation('stand');
 
+    GAME.engine.light.add('light_medium', { x: this._spriteGroup.x, y: this._spriteGroup.y }, this._spriteGroup);
+
     p.done();
 
     return p;

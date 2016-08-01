@@ -37,6 +37,8 @@ class Game {
     this.engine.charLoader.init();
     this.engine.player.init();
     this.engine.camera.init();
+    this.engine.light.init();
+
     this.camera.addChild(this.engine.camera.getContainer());
 
     this.camera.width = this.options.stage.width;
@@ -56,8 +58,8 @@ class Game {
   }
 
   load() {
-    this.engine.light.load()
-    .then(() => this.engine.camera.load())
+    this.engine.camera.load()
+    .then(() => this.engine.light.load())
     .then(() => this.engine.charLoader.load())
     .then(() => this.engine.world.load('house'))
     .then(() => this.engine.player.load())
@@ -67,6 +69,7 @@ class Game {
   update() {
     this.stats.begin();
 
+    this.engine.light.update();
     this.engine.world.update();
     this.engine.player.update();
     this.engine.camera.update();

@@ -10,15 +10,13 @@ class Camera extends Engine {
 
     this.NAME = 'Camera';
 
-    this._container;
+    this._container = new PIXI.Container();
+    this._container.scale = { x: 2, y: 2 };
     this.shaders = {};
   }
 
-  init(container) {
+  init() {
     super.init();
-
-    this._container = new PIXI.Container();
-    this._container.scale = { x: 2, y: 2 };
   }
 
   load() {
@@ -141,17 +139,20 @@ class Camera extends Engine {
     return true;
   }
 
-  setShader(shaderName, value, uniforms, hasVertex) {
-    if (value) {
+  setShader(shaderName, customShader, visible, uniforms, hasVertex) {
+    if (visible) {
       if (!uniforms) {
         uniforms = {};
       }
 
-      this.shaders[shaderName] = new PIXI.Filter(hasVertex ? shaders[shaderName + '_vert'] : '', shaders[shaderName], uniforms);
+      if (customShader === false) {
+        this.shaders[shaderName] = new PIXI.Filter(hasVertex ? shaders[shaderName + '_vert'] : '', shaders[shaderName], uniforms);
+      } else {
+        this.shaders[shaderName] = customShader;
+      }
     } else {
       delete this.shaders[shaderName];
     }
-
 
     GAME.camera.filters = this._objectToArray(this.shaders);
   }

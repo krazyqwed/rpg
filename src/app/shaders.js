@@ -33,7 +33,7 @@ varying vec2 vFilterCoord;
 
 void main(void) {
   gl_Position = vec4((projectionMatrix * vec3(aVertexPosition, 1.0)).xy, 0.0, 1.0);
-  vFilterCoord = ( filterMatrix * vec3( aTextureCoord, 1.0)  ).xy;
+  vFilterCoord = (filterMatrix * vec3( aTextureCoord, 1.0)).xy;
   vTextureCoord = aTextureCoord;
 }
 `;
@@ -42,22 +42,18 @@ shaders['lightmap_frag'] = `
 varying vec2 vFilterCoord;
 varying vec2 vTextureCoord;
 
-uniform vec2 scale;
+uniform vec4 daylight;
 
 uniform sampler2D uSampler;
 uniform sampler2D mapSampler;
-
-uniform vec4 filterClamp;
 
 void main(void) {
   vec4 diffuse = texture2D(uSampler, vTextureCoord);
   vec4 map = texture2D(mapSampler, vFilterCoord);
 
-  diffuse.r *= map.r + 0.45;
-  diffuse.g *= map.g + 0.45;
-  diffuse.b *= map.b + 0.45;
-
-  diffuse.rgb -= (1.0 - map.a) + 0.1;
+  diffuse.r *= max(daylight.a, map.a) * max(daylight.a - 0.1, map.r);
+  diffuse.g *= max(daylight.a, map.a) * max(daylight.a - 0.1, map.g);
+  diffuse.b *= max(daylight.a, map.a) * max(daylight.a - 0.1, map.b);
 
   gl_FragColor = diffuse;
 }

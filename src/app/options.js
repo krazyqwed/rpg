@@ -5,6 +5,7 @@ export default {
   },
   maps: {
     playerLayer: 100,
+    uiLayer: 100000,
     tileSize: 24
   }
 };

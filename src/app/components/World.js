@@ -25,12 +25,7 @@ class World extends Engine {
     this.mapTiles;
     this.npcs;
     this.events;
-
-    this.lightSprite;
-    this.lightSprite2;
-    this.lightmap;
-    this.lightmapContainer;
-    this.renderTexture;
+    this.lights = [];
   }
 
   init() {
@@ -50,6 +45,14 @@ class World extends Engine {
     this.mapTiles = [];
     this.npcs = [];
     this.events = [];
+
+    if (this.lights.length) {
+      this.lights.forEach(function(i) {
+        GAME.engine.light.remove(i);
+      });
+
+      this.lights = [];
+    }
   }
 
   _cleanCache() {
@@ -101,38 +104,8 @@ class World extends Engine {
     this._placeEvents(this.mapCache[map].events.data);
 
     if (typeof this.mapCache[map].map.data.interior !== 'undefined' && this.mapCache[map].map.data.interior === true) {
-      var lightTexture = new PIXI.Texture(GAME.engine.light.textures['light_fire_down_small_yellow'].texture);
-      this.lightSprite = new PIXI.Sprite(lightTexture);
-      this.lightSprite.position.x = 246;
-      this.lightSprite.position.y = 70;
-      this.lightSprite.position.z = 10000;
-
-      this.lightSprite2 = new PIXI.Sprite(lightTexture);
-      this.lightSprite2.position.x = 48;
-      this.lightSprite2.position.y = 246;
-      this.lightSprite2.position.z = 10000;
-
-      var lightmapBg = new PIXI.Graphics();
-      lightmapBg.beginFill(0x000000);
-      lightmapBg.drawRect(0, 0, GAME.options.stage.width, GAME.options.stage.height);
-      lightmapBg.endFill();
-
-      this.lightmapContainer = new PIXI.Container();
-      this.lightmapContainer.addChild(lightmapBg);
-      this.lightmapContainer.addChild(this.lightSprite);
-      this.lightmapContainer.addChild(this.lightSprite2);
-
-      this.renderTexture = PIXI.RenderTexture.create(GAME.options.stage.width, GAME.options.stage.height);
-
-      this.lightmap = new PIXI.Sprite(this.renderTexture);
-
-      GAME.engine.camera.getContainer().addChild(this.lightmap);
-
-      GAME.camera.filters = [new PIXI.filters.LightmapFilter(this.lightmap)];
-    } else {
-      this.lightmapContainer = false;
-
-      GAME.camera.filters = false;
+      this.lights.push(GAME.engine.light.add('light_fire_medium_yellow', { x: 244, y: 14 }));
+      this.lights.push(GAME.engine.light.add('light_fire_down_small_yellow', { x: 52, y: 246 }));
     }
 
     if (playerPosition) {
@@ -350,16 +323,6 @@ class World extends Engine {
   checkEvent(pos) {
     if (typeof this.events[pos.x + '_' + pos.y] !== 'undefined') {
       this.events[pos.x + '_' + pos.y].run('touch');
-    }
-  }
-
-  update() {
-    super.update();
-
-    if (this.lightmapContainer) {
-      this.lightmapContainer.scale = { x: 1.0 - Math.random() / 100, y: 1.0 - Math.random() / 100 }
-
-      GAME.renderer.render(this.lightmapContainer, this.renderTexture);
     }
   }
 }
