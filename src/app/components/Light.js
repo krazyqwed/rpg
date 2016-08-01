@@ -45,13 +45,9 @@ class Light extends Engine {
 
     this.lightLoader;
     this.lights = [
-      'light_small',
-      'light_fire_down_small_2',
-      'light_medium',
-      'light_fire_medium_yellow',
-      'light_fire_down_small_yellow',
-      'light_fire_down_small_yellow_2',
-      'light_fire_down_small_purple_2'
+      'light_radial',
+      'light_down',
+      'light_down_2'
     ];
     this.textures = {};
 
@@ -101,6 +97,7 @@ class Light extends Engine {
     var id = 'sprite' + this.maxShaderId;
     var lightTexture = new PIXI.Texture(GAME.engine.light.textures[sprite].texture);
     this.lightSprites[id] = new PIXI.Sprite(lightTexture);
+    this.lightSprites[id].blendModes = PIXI.BLEND_MODES.ADD;
     this.lightSprites[id].__options = options;
     this.lightSprites[id].__attached = attached;
 
@@ -110,7 +107,6 @@ class Light extends Engine {
     }
 
     if (options.scale) {
-      this.lightSprites[id].tint = '0x' + this._dec2hex(options.color.r * 255) + this._dec2hex(options.color.g * 255) + this._dec2hex(options.color.b * 255);
       this.lightSprites[id].scale = { x: options.scale, y: options.scale }
     }
 
@@ -119,7 +115,12 @@ class Light extends Engine {
       this.lightSprites[id].y = options.position.y;
     }
 
+    if (options.position && options.position.z) {
+      this.lightSprites[id].position.z = options.position.z;
+    }
+
     this.lightmapContainer.addChild(this.lightSprites[id]);
+    this.lightmapContainer.children.sort(GAME.engine.camera.depthCompare);
 
     if (Object.keys(this.lightSprites).length) {
       this.lightmapFilter = new PIXI.filters.LightmapFilter(this.lightmap);
@@ -142,7 +143,7 @@ class Light extends Engine {
     super.update();
 
     if (Object.keys(this.lightSprites).length) {
-      this.lightmapFilter.uniforms.daylight = [0, 0, 0, 0.5];
+      this.lightmapFilter.uniforms.daylight = [1.0, 1.0, 1.0, 0.5];
 
       for (var light in this.lightSprites) {
         if (this.lightSprites[light].__attached) {

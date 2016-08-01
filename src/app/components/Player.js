@@ -59,8 +59,9 @@ class Player extends Engine {
     this._initAnimations(GAME.engine.charLoader.characters[0].textures);
     this.setAnimation('stand');
 
-    GAME.engine.light.add('light_medium', {
-      position: { x: this._spriteGroup.x, y: this._spriteGroup.y }
+    GAME.engine.light.add('light_radial', {
+      position: { x: this._spriteGroup.x, y: this._spriteGroup.y, z: GAME.options.maps.playerLayer },
+      scale: 3.0
     }, this._spriteGroup);
 
     p.done();

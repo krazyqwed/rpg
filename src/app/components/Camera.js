@@ -72,7 +72,7 @@ class Camera extends Engine {
       }
     }
 
-    this._container.children.sort(this._depthCompare.bind(this));
+    this._container.children.sort(this.depthCompare);
   }
 
   limitDraw() {
@@ -94,7 +94,7 @@ class Camera extends Engine {
     }
   }
 
-  _depthCompare(a, b) {
+  depthCompare(a, b) {
     var az = a.position.z;
     var bz = b.position.z;
 

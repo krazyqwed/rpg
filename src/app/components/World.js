@@ -104,15 +104,16 @@ class World extends Engine {
     this._placeEvents(this.mapCache[map].events.data);
 
     //if (typeof this.mapCache[map].map.data.interior !== 'undefined' && this.mapCache[map].map.data.interior === true) {
-      this.lights.push(GAME.engine.light.add('light_medium', {
+      this.lights.push(GAME.engine.light.add('light_radial', {
         position: { x: 122, y: -122 },
         color: { r: 1.0, g: 0.7, b: 0.4, a: 1.0 },
-        scale: 2.0,
+        scale: 4.0,
         effect: 'fire'
       }));
-      this.lights.push(GAME.engine.light.add('light_medium', {
+      this.lights.push(GAME.engine.light.add('light_radial', {
         position: { x: 52, y: 246 },
         color: { r: 1.0, g: 0.7, b: 0.4, a: 1.0 },
+        scale: 2.0,
         effect: 'fire'
       }));
     //}
