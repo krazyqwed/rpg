@@ -51,9 +51,9 @@ void main(void) {
   vec4 diffuse = texture2D(uSampler, vTextureCoord);
   vec4 map = texture2D(mapSampler, vFilterCoord);
 
-  diffuse.r *= max(daylight.a, map.a) * max(daylight.a - 0.1, map.r);
-  diffuse.g *= max(daylight.a, map.a) * max(daylight.a - 0.1, map.g);
-  diffuse.b *= max(daylight.a, map.a) * max(daylight.a - 0.1, map.b);
+  diffuse.r *= max(daylight.a, map.a) * max(daylight.a, map.r);
+  diffuse.g *= max(daylight.a, map.a) * max(daylight.a, map.g);
+  diffuse.b *= max(daylight.a, map.a) * max(daylight.a, map.b);
 
   gl_FragColor = diffuse;
 }

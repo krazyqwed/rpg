@@ -95,19 +95,28 @@ class Light extends Engine {
     return p;
   }
 
-  add(sprite, position, attached) {
+  add(sprite, options, attached) {
     this.maxShaderId++;
 
     var id = 'sprite' + this.maxShaderId;
     var lightTexture = new PIXI.Texture(GAME.engine.light.textures[sprite].texture);
     this.lightSprites[id] = new PIXI.Sprite(lightTexture);
-    this.lightSprites[id].__position = position;
+    this.lightSprites[id].__options = options;
     this.lightSprites[id].__attached = attached;
-    this.lightSprites[id].blendMode = PIXI.BLEND_MODES.NORMAL;
+
+    if (options.color) {
+      this.lightSprites[id].tint = '0x' + this._dec2hex(options.color.r * 255) + this._dec2hex(options.color.g * 255) + this._dec2hex(options.color.b * 255);
+      this.lightSprites[id].alpha = options.color.a;
+    }
+
+    if (options.scale) {
+      this.lightSprites[id].tint = '0x' + this._dec2hex(options.color.r * 255) + this._dec2hex(options.color.g * 255) + this._dec2hex(options.color.b * 255);
+      this.lightSprites[id].scale = { x: options.scale, y: options.scale }
+    }
 
     if (!attached) {
-      this.lightSprites[id].x = position.x;
-      this.lightSprites[id].y = position.y;
+      this.lightSprites[id].x = options.position.x;
+      this.lightSprites[id].y = options.position.y;
     }
 
     this.lightmapContainer.addChild(this.lightSprites[id]);
@@ -133,7 +142,7 @@ class Light extends Engine {
     super.update();
 
     if (Object.keys(this.lightSprites).length) {
-      this.lightmapFilter.uniforms.daylight = [0, 0, 0, 0.1];
+      this.lightmapFilter.uniforms.daylight = [0, 0, 0, 0.5];
 
       for (var light in this.lightSprites) {
         if (this.lightSprites[light].__attached) {
@@ -145,20 +154,20 @@ class Light extends Engine {
           this.lightSprites[light].x = aX - this.lightSprites[light].width / 2 + aW / 4;
           this.lightSprites[light].y = aY - this.lightSprites[light].height / 2 + aH / 4;
 
-          if (this.lightSprites[light].__position.align) {
-            if (this.lightSprites[light].__position.align.indexOf('up') > -1) {
+          if (this.lightSprites[light].__options.position.align) {
+            if (this.lightSprites[light].__options.position.align.indexOf('up') > -1) {
               this.lightSprites[light].y = aY - this.lightSprites[light].height;
             }
 
-            if (this.lightSprites[light].__position.align.indexOf('right') > -1) {
+            if (this.lightSprites[light].__options.position.align.indexOf('right') > -1) {
               this.lightSprites[light].x = aX + this.lightSprites[light].width + aW;
             }
 
-            if (this.lightSprites[light].__position.align.indexOf('down') > -1) {
+            if (this.lightSprites[light].__options.position.align.indexOf('down') > -1) {
               this.lightSprites[light].y = aY + this.lightSprites[light].height + aH;
             }
 
-            if (this.lightSprites[light].__position.align.indexOf('left') > -1) {
+            if (this.lightSprites[light].__options.position.align.indexOf('left') > -1) {
               this.lightSprites[light].x = aX - this.lightSprites[light].width;
             }
           }
@@ -167,6 +176,16 @@ class Light extends Engine {
 
       GAME.renderer.render(this.lightmapContainer, this.renderLightmapTexture);
     }
+  }
+
+  _dec2hex(dec) {
+    var num = Number(parseInt(dec , 10));
+
+    if (num < 16) {
+      return '0' + num.toString(16);
+    }
+    
+    return num.toString(16);
   }
 }
 
