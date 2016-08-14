@@ -1,4 +1,4 @@
-import { deepClone } from '../mixins';
+import deepClone from 'clone-deep';
 
 var GAME;
 

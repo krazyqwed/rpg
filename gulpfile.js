@@ -97,7 +97,7 @@ gulp.task('jsConcat', ['js'], function() {
         }));
 });
 
-gulp.task('watch', function() {
+gulp.task('watch', ['default'], function() {
     $.livereload.listen();
 
     gulp.watch([cssPath + '**/*.scss'], ['cssConcat']);

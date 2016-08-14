@@ -62,8 +62,8 @@
     }
   },
   "meta": {
-    "image": "player.png",
+    "image": "vanguard.png",
     "format": "RGBA8888",
-    "size": {"w":144,"h":192}
+    "size": {"w":288,"h":192}
   }
 }

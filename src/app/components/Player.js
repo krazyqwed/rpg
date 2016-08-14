@@ -56,7 +56,7 @@ class Player extends Engine {
 
     GAME.engine.camera.getContainer().addChild(this._spriteGroup);
 
-    this._initAnimations(GAME.engine.charLoader.characters[0].textures);
+    this._initAnimations(GAME.engine.charLoader.layers);
     this.setAnimation('stand');
 
     GAME.engine.light.add('light_radial', {
@@ -174,17 +174,50 @@ class Player extends Engine {
     this.canMove = val;
   }
 
-  _initAnimations(tex) {
-    var sprite;
+  _initAnimations(layers) {
+    for (var dir = 0; dir < 4; ++dir) {
+      var layerStand = new PIXI.Container();
+      var layerWalk = new PIXI.Container();
 
-    for (var i = 0; i < 4; ++i) {
-      sprite = new PIXI.extras.MovieClip([tex[i * 3 + 2]]);
-      this.animations['stand'].addChild(sprite);
+      layerWalk.visible = false;
 
-      sprite = new PIXI.extras.MovieClip([tex[i * 3 + 1], tex[i * 3 + 2], tex[i * 3 + 3], tex[i * 3 + 2]]);
-      sprite.animationSpeed = 1 / sprite.textures.length / 2;
-      sprite.visible = false;
-      this.animations['walk'].addChild(sprite);
+      for (var tex in layers) {
+        var sprite;
+
+        sprite = new PIXI.extras.MovieClip([layers[tex].textures[dir * 3 + 2]]);
+
+        if (parseInt(tex, 10) === 2) {
+          sprite.tint = 0xFF3333;
+        }
+        if (parseInt(tex, 10) === 3) {
+          sprite.tint = 0x442211;
+        }
+        if (parseInt(tex, 10) === 4) {
+          sprite.tint = 0x222222;
+        }
+
+        layerStand.addChild(sprite);
+
+
+
+        sprite = new PIXI.extras.MovieClip([layers[tex].textures[dir * 3 + 1], layers[tex].textures[dir * 3 + 2], layers[tex].textures[dir * 3 + 3], layers[tex].textures[dir * 3 + 2]]);
+        sprite.animationSpeed = 1 / sprite.textures.length / 2;
+
+        if (parseInt(tex, 10) === 2) {
+          sprite.tint = 0xFF3333;
+        }
+        if (parseInt(tex, 10) === 3) {
+          sprite.tint = 0x442211;
+        }
+        if (parseInt(tex, 10) === 4) {
+          sprite.tint = 0x222222;
+        }
+
+        layerWalk.addChild(sprite);
+      }
+
+      this.animations['stand'].addChild(layerStand);
+      this.animations['walk'].addChild(layerWalk);
     }
 
     this._spriteGroup.addChild(this.animations['stand']);
@@ -198,11 +231,14 @@ class Player extends Engine {
   }
 
   resetAnimations() {
-    for (var i in this.animations) {
-      for (var j = 0; j < 4; ++j) {
-        if (i !== this.activeAnimation || j !== this.facing) {
-          this.animations[i].children[j].visible = false;
-          this.animations[i].children[j].gotoAndStop(0);
+    for (var key in this.animations) {
+      for (var dir = 0; dir < 4; ++dir) {
+        if (key !== this.activeAnimation || dir !== this.facing) {
+          this.animations[key].children[dir].visible = false;
+
+          for (var item in this.animations[key].children[dir].children) {
+            this.animations[key].children[dir].children[item].gotoAndStop(0);
+          }
         }
       }
     }
@@ -212,15 +248,22 @@ class Player extends Engine {
     this.resetAnimations();
 
     this.animations[this.activeAnimation].children[this.facing].visible = true;
-    this.animations[this.activeAnimation].children[this.facing].play();
+
+    for (var item in this.animations[this.activeAnimation].children[this.facing].children) {
+      this.animations[this.activeAnimation].children[this.facing].children[item].play();
+    }
   }
 
   pauseAnimation() {
-    this.animations[this.activeAnimation].children[this.facing].stop();
+    for (var item in this.animations[this.activeAnimation].children[this.facing].children) {
+      this.animations[this.activeAnimation].children[this.facing].children[item].stop();
+    }
   }
 
   stopAnimation() {
-    this.animations[this.activeAnimation].children[this.facing].gotoAndStop(0);
+    for (var item in this.animations[this.activeAnimation].children[this.facing].children) {
+      this.animations[this.activeAnimation].children[this.facing].children[item].gotoAndStop(0);
+    }
   }
 }
 

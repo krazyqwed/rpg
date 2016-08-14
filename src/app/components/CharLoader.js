@@ -1,4 +1,5 @@
 import Engine from '../Engine';
+import { deepClone } from '../mixins';
 
 var GAME;
 
@@ -9,10 +10,17 @@ class CharLoader extends Engine {
 
     this.NAME = 'Character';
 
-    this.charsets = [
-      'tilemap_1'
+    this.tilemapSkeleton = 'tilemap_skeleton';
+
+    this.layerImages = [
+      'vanguard',
+      'vanguard_cloth',
+      'vanguard_faction1',
+      'vanguard_skin',
+      'vanguard_plate'
     ];
-    this.characters = {};
+
+    this.layers = {};
   }
 
   init() {
@@ -22,17 +30,33 @@ class CharLoader extends Engine {
   load() {
     super.load();
 
-    var p = new promise.Promise();
+    let p = new promise.Promise();
 
     this.characterLoader = new PIXI.loaders.Loader();
 
-    for (var i in this.charsets) {
-      this.characterLoader.add(this.charsets[i], 'resources/charsets/' + this.charsets[i] + '.json');
+    this.characterLoader.add('skeleton', 'resources/charsets/' + this.tilemapSkeleton + '.json');
+
+    for (let i in this.layerImages) {
+      this.characterLoader.add(this.layerImages[i], 'resources/charsets/' + this.layerImages[i] + '.png');
     }
 
     this.characterLoader.load((loader, res) => {
-      for (var i in this.charsets) {
-        this.characters[i] = res[this.charsets[i]];
+      for (let i = 0; i < this.layerImages.length; ++i) {
+        res[this.layerImages[i]].noFrame = false;
+
+        let clone = {
+          textures: {}
+        };
+
+        for (let j in res['skeleton'].textures) {
+          var frame = res['skeleton'].textures[j]._frame;
+
+          clone.textures[j] = new PIXI.Texture(res[this.layerImages[i]].texture);
+          clone.textures[j].noFrame = false;
+          clone.textures[j].frame = new PIXI.Rectangle(frame.x, frame.y, frame.width, frame.height);
+        }
+
+        this.layers[i] = clone;
       }
 
       p.done();
